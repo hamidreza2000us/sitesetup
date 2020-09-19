@@ -1,19 +1,16 @@
 #this script setup a base system to be use as dns forwarder,
 #it also server as primary dns server before IDM is setup
-#After host is setup is finished, setup IDM host and make is primary DNS server for other servers
-#don't forget to use this host as IDM forwarder
-#start with a fresh miniamal RH82 with at least 1 core, 512 MG memory, 20GB disk is enough
-#don't forget to 1- mount the installation DVD and 2- don't run any DHCP service in the current network
-#do the following manually
-#ip a sh
-#ip a a 192.168.13.10/24 dev ens160
-#ip route add default via 192.168.13.2 dev ens160
-#-----------------------------------
-#ssh to host
-mkdir ~/sitesetup/
+#######################################################################################
+#PLEASE note the 0-INTRO.txt and excute the commands needed before running this script#
+#######################################################################################
+echo "We need some input for intial setup. Plase be patient for a few minutes"
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-8-BaseParameters.sh -o ~/sitesetup/RH7-8-BaseParameters.sh
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-BaseSystem.sh -o ~/sitesetup/RH7-BaseSystem.sh
 bash ~/sitesetup/RH7-8-BaseParameters.sh
 bash ~/sitesetup/RH7-ForemanBaseSystem.sh
+ssh-keygen -t rsa
+ssh-copy-id root@
+echo "There is no other input from your side. So relax. this setup would takes hours to complete"
 git clone https://github.com/hamidreza2000us/sitesetup.git
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
+

@@ -11,7 +11,7 @@
 #IPA/IDM	CPU:6C	RAM:8G	Disk:20G	OS:RH82			InternetAcess:Yes	subnet:subnet01
 #Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS7.8	InternetAcess:Yes	subnet:subnet01
 #After (or during the) Installation setup IP address on both servers
-#You may find command below useful 
+#You may find command below useful (CAPITALS should be replaced by a value)
 #ip a a IP/24 dev ENS
 #ip route add default via GW dev ENS
 
@@ -21,4 +21,7 @@
 #echo "proxy_username=yum-user" >> /etc/yum.conf
 #echo "proxy_password=qwerty" >> /etc/yum.conf
 
-#Login to Foreman and excute ........................
+#ssh to Foreman and excute:
+#mkdir ~/sitesetup/
+#curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/01-Startup.sh -o 01-Startup.sh
+#bash 01-Startup.sh
