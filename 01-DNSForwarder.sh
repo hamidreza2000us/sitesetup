@@ -10,21 +10,9 @@
 #ip route add default via 192.168.13.2 dev ens160
 #-----------------------------------
 #ssh to host
-#upload Site01.tar to /root/
-if [ -f ~/Site01.tar ]
-then
-  tar -xvf ~/Site01.tar
-  #copy and paste RH8-BaseSystem.sh to /root/
-  sed -i '1s/^.*#/#/;s/\r$//' ~/Site01/RH8-BaseSystem.sh
-  bash ~/Site01/RH8-BaseSystem.sh
-  #copy RH82-DNSMasqSetup.sh to /root/
-  sed -i '1s/^.*#/#/;s/\r$//' ~/Site01/RH82-DNSMasqSetup.sh
-  bash ~/Site01/RH82-DNSMasqSetup.sh
-  #copy RH82-HTTPDSetup.sh
-  sed -i '1s/^.*#/#/;s/\r$//' ~/Site01/RH82-HTTPDSetup.sh
-  bash ~/Site01/RH82-HTTPDSetup.sh
-  mv Site01 /srv/myhost/www/
-  restorecon -Rv /srv/myhost/www/
-fi
-#################################################changed5
-####
+yum -y install git
+git clone https://github.com/hamidreza2000us/sitesetup.git
+bash ~/sitesetup/RH7-BaseSystem.sh
+bash ~/sitesetup/RH82-DNSMasqSetup.sh
+
+

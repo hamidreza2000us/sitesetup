@@ -1,0 +1,12 @@
+#These scripts will setup IDM and FreeIPA as basic tools for infrastructure management
+#I tried to automate every step. This way I can keep track of my learning and also make sure of their accuracy.
+#This way multiple features such as DNS servers, Forwarders, DHCP, Package manager, Provisioning, User management ,
+#Audit and other features are automaticly activated for entire datacenter
+#To start you need to setup two systems for Foreman and FreeIPA
+#These systems should be based on below (minimum) requirements:
+#1-All OS setup should be minimal with exact OS version
+#2-Make sure the Installation DVD is mounted to DVD drive
+#FreeIPA	CPU:6C	RAM:8G	Disk:20G	OS:RH82
+#Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS 7.8
+
+
