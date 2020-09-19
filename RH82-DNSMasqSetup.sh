@@ -1,8 +1,12 @@
-#make sure installation DVD is mounted
+#make sure the installation DVD is mounted
+IDMHOSTNAME="idm.myhost.com"
+IDMIP=192.168.13.11
+Domain="myhost.com"
 if [[ $# > 0 ]]
 then
-  export IDMHOSTNAME=${1}
-  export IDMIP=${2}
+  export IDMHOSTNAME=$( [[ -n "${1}"  ]] && echo ${1} || echo $IDMHOSTNAME ); 
+  export IDMIP=$( [[ -n "${2}"  ]] && echo ${2} || echo $IDMIP ); 
+  export Domain=$( [[ -n "${3}"  ]] && echo ${3} || echo $Domain ); 
 fi
 
 read -rp "Hostname to set for IDM: ($IDMHOSTNAME): " choice;
@@ -13,6 +17,11 @@ read -rp "Hostname to set for IDM: ($IDMHOSTNAME): " choice;
 read -rp "IP to use: ($IDMIP): " choice;
        if [ "$choice" != "" ] ; then
                export IDMIP="$choice";
+       fi
+	   
+read -rp "Domain to use: ($Domain): " choice;
+       if [ "$choice" != "" ] ; then
+               export Domain="$choice";
        fi
 
 if [ ! -d /mnt/cdrom ] ; then mkdir /mnt/cdrom ; fi
@@ -69,9 +78,9 @@ cat > /tmp/dnsmasqconfig << EOF
 defvar mypath /files/etc/dnsmasq.conf
 set \$mypath/no-dhcp-interface ens33
 set \$mypath/bogus-priv
-set \$mypath/domain myhost.com
+set \$mypath/domain $Domain
 set \$mypath/expand-hosts
-set \$mypath/local /myhost.com/
+set \$mypath/local /$Domain/
 set \$mypath/domain-needed
 set \$mypath/no-resolv
 set \$mypath/no-poll
