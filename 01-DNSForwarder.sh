@@ -26,6 +26,8 @@ then
   mv Site01 /srv/myhost/www/
   restorecon -Rv /srv/myhost/www/
 fi
+#################################################changed
+
 
 
 
