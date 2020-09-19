@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 #This script set hostname, convert DHCP IP address to permenant, configure dns server, mount cdrom, setup repository
 
 export HOSTNAME="$(hostname)"
