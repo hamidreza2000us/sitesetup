@@ -38,7 +38,7 @@ baseurl=file:///mnt/cdrom
 gpgcheck=0
 EOD
 
-yum install -y bash-completion tuned chrony lsof nmap tmux tcpdump telnet unzip vim yum-utils bind-utils sysstat
+yum install -y bash-completion tuned chrony lsof nmap tmux tcpdump telnet unzip vim yum-utils bind-utils sysstat git
 
 if [ $(systemctl is-enabled chronyd) == 'disabled'  ]
 then

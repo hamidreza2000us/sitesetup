@@ -11,8 +11,9 @@
 #-----------------------------------
 #ssh to host
 mkdir ~/sitesetup/
-yum -y install git
-git clone https://github.com/hamidreza2000us/sitesetup.git
+curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-8-BaseParameters.sh -o ~/sitesetup/RH7-8-BaseParameters.sh
+curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-BaseSystem.sh -o ~/sitesetup/RH7-BaseSystem.sh
 bash ~/sitesetup/RH7-8-BaseParameters.sh
 bash ~/sitesetup/RH7-ForemanBaseSystem.sh
+git clone https://github.com/hamidreza2000us/sitesetup.git
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
