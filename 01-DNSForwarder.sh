@@ -1,4 +1,4 @@
-#this script setup very base system to be use as dns forwarder,
+#this script setup a base system to be use as dns forwarder,
 #it also server as primary dns server before IDM is setup
 #After host is setup is finished, setup IDM host and make is primary DNS server for other servers
 #don't forget to use this host as IDM forwarder
@@ -10,9 +10,9 @@
 #ip route add default via 192.168.13.2 dev ens160
 #-----------------------------------
 #ssh to host
+mkdir ~/sitesetup/
 yum -y install git
 git clone https://github.com/hamidreza2000us/sitesetup.git
-bash ~/sitesetup/RH7-BaseSystem.sh
+bash ~/sitesetup/RH7-8-BaseParameters.sh
+bash ~/sitesetup/RH7-ForemanBaseSystem.sh
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
-
-

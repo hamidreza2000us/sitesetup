@@ -1,5 +1,9 @@
 #!/bin/bash
 #This script set hostname, convert DHCP IP address to permenant, configure dns server, mount cdrom, setup repository
+if [[ -f variables.sh ]]
+then
+  source variables.sh
+fi
 
 export HOSTNAME="$(hostname)"
 export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $7; exit}')"}
