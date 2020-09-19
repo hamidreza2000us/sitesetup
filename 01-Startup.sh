@@ -9,7 +9,7 @@ curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-Base
 bash ~/sitesetup/RH7-8-BaseParameters.sh
 bash ~/sitesetup/RH7-ForemanBaseSystem.sh
 ssh-keygen -t rsa
-ssh-copy-id root@
+ssh-copy-id root@$IDMIP
 echo "There is no other input from your side. So relax. this setup would takes hours to complete"
 git clone https://github.com/hamidreza2000us/sitesetup.git
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
