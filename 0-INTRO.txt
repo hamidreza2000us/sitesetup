@@ -6,7 +6,10 @@
 #These systems should be based on below (minimum) requirements:
 #1-All OS setup should be minimal with exact OS version
 #2-Make sure the Installation DVD is mounted to DVD drive
-#FreeIPA	CPU:6C	RAM:8G	Disk:20G	OS:RH82
-#Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS 7.8
-
+#FreeIPA	CPU:6C	RAM:8G	Disk:20G	OS:RH82			InternetAcess:Yes	subnet:
+#Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS 7.8	InternetAcess:Yes
+#After (or during the) Installation setup IP address on both servers
+#You may find command below useful 
+#ip a a IP/24 dev ENS
+#ip route add default via GW dev ENS
 
