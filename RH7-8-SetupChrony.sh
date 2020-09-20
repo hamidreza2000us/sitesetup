@@ -13,7 +13,7 @@ set \$mypath/allow $mynet
 save
 EOF
 augtool -s -f /tmp/chronyconfig
-if [ "$(systemctl is-enabled ntpd)" == "enabled" ] 
+if [ "$(systemctl is-enabled ntpd 2> /dev/null)" == "enabled" ] 
   then 
   systemctl stop ntpd  ;
   systemctl disable ntpd ; 

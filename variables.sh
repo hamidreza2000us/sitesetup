@@ -11,3 +11,4 @@ export ForemanIP=192.168.13.250
 export ForemanNETMASK=24
 export ForemanGW=192.168.13.2
 export ForemanDNSSERVER=8.8.8.8
+export ForemanPass=Iahoora@123

@@ -1,6 +1,8 @@
 #!/bin/bash
-ntpserver="192.168.13.11"
-#mynet="192.168.0.0/16"
+if [[ -f ~/sitesetup/variables.sh ]]
+then
+  source ~/sitesetup/variables.sh
+fi
 yum -y install augeas chrony
 cat > /tmp/chronyconfig << EOF
 defvar mypath /files/etc/chrony.conf
@@ -9,7 +11,7 @@ rm /files/etc/chrony.conf/pool
 set \$mypath/#comment[last()+1] "=========================="
 set \$mypath/#comment[last()+1] "##########################"
 set \$mypath/#comment[last()+1] "configured using augtool"
-set \$mypath/server[1] $ntpserver
+set \$mypath/server[1] $IDMIP
 set \$mypath/server[1]/iburst
 #set \$mypath/allow $mynet
 save

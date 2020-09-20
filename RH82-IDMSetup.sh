@@ -45,5 +45,5 @@ then
   systemctl enable chronyd  
 fi
 systemctl restart chronyd
-kinit admin
+echo "$IDMPass" | kinit admin
 ipa dnszone-mod myhost.com. --allow-sync-ptr=TRUE

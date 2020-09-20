@@ -1,19 +1,25 @@
-domain=foreman3.myhost.com
-domainname=myhost.com
-pass=ahoora
-interface=ens33
-subnetname=subnet13
-startip=192.168.13.50
-endip=192.168.13.100
-gw=192.168.13.2
-dns=192.168.13.11
-network=192.168.13.0
+source ~/sitesetup/variables.sh
+domain=$ForemanHOSTNAME
+domainname=$IDMDomain
+pass=$ForemanPass
+interface=$(nmcli dev | grep connected | awk  '{print $1}')
+subnetname=$(echo ${ForemanIP} | awk -F. '{print "subnet"$3}')
+
+gw=$ForemanGW
+dns=$IDMIP
+IPRange=$(echo ${ForemanIP} | awk -F. '{print $1"."$2"."$3}')
+startip=$IPRange.50
+endip=$IPRange.100
+network=$IPRange.0
 netmask=255.255.255.0
-idmhost=idm.myhost.com
+idmhost=$IDMHOSTNAME
 idmuser=admin
-idmpass=Iahoora@123
+idmpass=$IDMPass
+idmdn=$(echo $IDMDomain | awk -F. '{print "dc="$1",dc="$2}')
 idmdn="dc=myhost ,dc=com"
-idmrealm=MYHOST.COM
+idmrealm=$IDMRealm
+
+#default Values
 newsyspass=Iahoora@123
 OS=RH
 major=7
@@ -53,7 +59,7 @@ foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-
 --foreman-proxy-bmc true \
 --foreman-proxy-plugin-discovery-install-images true \
 --foreman-proxy-dhcp true \
---foreman-proxy-dhcp-interface ens33 \
+--foreman-proxy-dhcp-interface $interface \
 --foreman-proxy-dhcp-managed true \
 --foreman-proxy-dhcp-range="$startip $endip" \
 --foreman-proxy-dhcp-nameservers $dns \
