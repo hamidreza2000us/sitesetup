@@ -18,6 +18,7 @@ if [[ $Fault == true ]]
 then
 	echo "There is a problem between running ip configurations and setup variables"
 	echo "Setup can't continue. Please resolve the issue and run it again"
+	exit 
 fi
 
 hostnamectl set-hostname $ForemanHOSTNAME
