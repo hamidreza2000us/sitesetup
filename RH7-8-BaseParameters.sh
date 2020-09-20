@@ -17,6 +17,7 @@ read -rp "Foreman IP to use: ($ForemanIP): " choice; [[ -n "${choice}"  ]] &&  e
 read -rp "Foreman Netmask to use (just the number of bits): ($ForemanNETMASK): " choice;	[[ -n "${choice}"  ]] &&  export ForemanNETMASK="$choice";
 read -rp "Foreman GW to use: ($ForemanGW): " choice; [[ -n "${choice}"  ]] &&  export ForemanGW="$choice";
 read -rp "Foreman Global DNS to use: ($ForemanDNSSERVER): " choice;	[[ -n "${choice}"  ]] &&  export ForemanDNSSERVER="$choice";
+read -rp "Foreman Password to use: ($ForemanPass): " choice;	[[ -n "${choice}"  ]] &&  export ForemanPass="$choice";
 
 echo "export IDMHOSTNAME=$IDMHOSTNAME" > ~/sitesetup-pre/variables.sh
 echo "export IDMIP=$IDMIP" >> ~/sitesetup-pre/variables.sh
@@ -30,3 +31,4 @@ echo "export ForemanIP=$ForemanIP" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanNETMASK=$ForemanNETMASK" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanGW=$ForemanGW" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanDNSSERVER=$ForemanDNSSERVER" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanPass=$ForemanPass" >> ~/sitesetup-pre/variables.sh
