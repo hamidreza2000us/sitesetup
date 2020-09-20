@@ -30,3 +30,4 @@ mkdir ~/sitesetup-pre/
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/01-Startup.sh -o ~/sitesetup-pre/01-Startup.sh
 bash ~/sitesetup-pre/01-Startup.sh
 
+

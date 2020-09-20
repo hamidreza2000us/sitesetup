@@ -19,6 +19,7 @@ bash ~/sitesetup/RH82-DNSMasqSetup.sh
 scp -r ~/sitesetup root@$IDMIP:~/
 ssh $IDMIP bash ~/sitesetup/02-IDMHostsetup.sh
 bash ~/sitesetup/RH7-8-SetupChronyClient.sh 
+nmcli con mod fixed ipv4.dns $IDMIP
 bash ~/sitesetup/CO77-IDMRegister.sh
 #bash ~/sitesetup/CO77-ForemanSetup.sh 
 
