@@ -1,8 +1,8 @@
 #!/bin/bash
 #This script set hostname, convert DHCP IP address to permenant, configure dns server, mount cdrom, setup repository
-if [[ -f variables.sh ]]
+if [[ -f ~/sitesetup-pre/variables.sh ]]
 then
-  source variables.sh
+  source ~/sitesetup-pre/variables.sh
 fi
 
 Fault=false
@@ -24,7 +24,7 @@ fi
 hostnamectl set-hostname $ForemanHOSTNAME
 nmcli con add con-name fixed ifname $ENS type ethernet connection.autoconnect yes ipv4.method manual ipv4.dns $ForemanDNSSERVER ipv4.gateway $ForemanGW ipv4.addresses $ForemanIP/$ForemanNETMASK 
 nmcli con up fixed
-nmcli con sh | grep " --" | awk '{print $1}' | xargs nmcli con del
+nmcli con sh | grep " --" | awk '{print $2}' | xargs nmcli con del
 
 if [ ! -d /mnt/cdrom ] ; then mkdir /mnt/cdrom ; fi
 if [ $(df | grep /mnt/cdrom | grep /dev/sr0 | wc -l) == 0 ] 

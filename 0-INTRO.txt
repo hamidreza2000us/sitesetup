@@ -13,9 +13,11 @@
 #After (or during the) Installation setup IP address on both servers
 #You may find command below useful (CAPITALS should be replaced by a value)
 
-#???disconnect nmcli dev
+#nmcli dev| grep ethernet | grep connecting | awk '{print $2}' | xargs nmcli dev dis
 #ip a a IP/24 dev ENS
 #ip route add default via GW dev ENS
+#echo "nameserver 8.8.8.8" > /etc/resolv.conf
+#ping -c1 GW
 
 #if required, setup proxy for Foreman server
 #export http_proxy=http://DOMAIN\\USERN\@ME:PASSWORD@SERVER:PORT > /etc/profile.d/http_proxy.sh
