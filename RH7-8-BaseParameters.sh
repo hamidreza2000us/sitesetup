@@ -11,6 +11,7 @@ read -rp "IDM Netmask to use (just the number of bits): ($IDMNETMASK): " choice;
 read -rp "IDM GW to use: ($IDMGW): " choice; [[ -n "${choice}"  ]] &&  export IDMGW="$choice";
 read -rp "IDM domain to use: ($IDMDomain): " choice; [[ -n "${choice}"  ]] &&  export IDMDomain="$choice";
 read -rp "IDM Realm to use: ($IDMRealm): " choice; [[ -n "${choice}"  ]] &&  export IDMRealm="$choice";
+read -rp "IDM Password to use: ($IDMPass): " choice; [[ -n "${choice}"  ]] &&  export IDMPass="$choice";
 read -rp "Foreman Hostname to use: ($ForemanHOSTNAME): " choice;[[ -n "${choice}"  ]] &&  export ForemanHOSTNAME="$choice";
 read -rp "Foreman IP to use: ($ForemanIP): " choice; [[ -n "${choice}"  ]] &&  export ForemanIP="$choice";
 read -rp "Foreman Netmask to use (just the number of bits): ($ForemanNETMASK): " choice;	[[ -n "${choice}"  ]] &&  export ForemanNETMASK="$choice";

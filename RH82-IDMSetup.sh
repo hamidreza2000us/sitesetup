@@ -1,4 +1,4 @@
-DNSServer="192.168.13.10"
+source ~/sitesetup/variables.sh
 yum module install -y idm:DL1/dns
 yum -y install augeas
 
@@ -28,12 +28,12 @@ augtool -s -f /tmp/hostsconfig
 #cat > /tmp/resolveconfig << EOF
 #defvar mypath /files/etc/resolv.conf
 #rm  \$mypath/nameserver
-#set \$mypath/nameserver[last()+1] $DNSServer
+#set \$mypath/nameserver[last()+1] $ForemanIP
 #save
 #EOF
 #augtool -s -f /tmp/resolveconfig
-
-ipa-server-install --realm MYHOST.COM --ds-password Iahoora@123 --admin-password Iahoora@123 --unattended --setup-dns --no-host-dns --auto-reverse --reverse-zone=13.168.192.in-addr.arpa. --forwarder 192.168.13.10 
+ReverseIP=$(echo ${IP} | awk -F. '{print $3"."$2"."$1".in-addr.arpa."}')
+ipa-server-install --realm MYHOST.COM --ds-password $IDMPass --admin-password $IDMPass --unattended --setup-dns --no-host-dns --auto-reverse --reverse-zone=$ReverseIP --forwarder $ForemanIP 
 
 if  [  $( firewall-cmd --query-service=freeipa-ldap) == 'no'  ] ; then firewall-cmd --permanent --add-service=freeipa-ldap ; fi
 if  [  $( firewall-cmd --query-service=freeipa-ldaps) == 'no'  ] ; then firewall-cmd --permanent --add-service=freeipa-ldaps ; fi

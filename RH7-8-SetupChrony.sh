@@ -1,5 +1,4 @@
 #!/bin/bash
-#ntpserver="192.168.1.189"
 mynet="192.168.0.0/16"
 yum -y install augeas chrony
 cat > /tmp/chronyconfig << EOF

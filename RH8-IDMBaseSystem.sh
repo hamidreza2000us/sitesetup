@@ -1,8 +1,8 @@
 #!/bin/bash
 #This script set hostname, convert DHCP IP address to permenant, configure dns server, mount cdrom, setup repository
-if [[ -f variables.sh ]]
+if [[ -f ~/sitesetup/variables.sh ]]
 then
-  source variables.sh
+  source ~/sitesetup/variables.sh
 fi
 
 Fault=false

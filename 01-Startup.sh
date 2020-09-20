@@ -8,7 +8,7 @@ curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-8-Ba
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-ForemanBaseSystem.sh -o ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/variables.sh -o ~/sitesetup-pre/variables.sh
 bash ~/sitesetup-pre/RH7-8-BaseParameters.sh
- source ~/sitesetup-pre/variables.sh
+source ~/sitesetup-pre/variables.sh
 bash ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
 ssh-keygen -t rsa
 ssh-copy-id root@$IDMIP
@@ -17,4 +17,6 @@ git clone https://github.com/hamidreza2000us/sitesetup.git
 cp ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
 scp -r ~/sitesetup root@$IDMIP:~/
+ssh $IDMIP 02-IDMHostsetup.sh
+
 
