@@ -23,6 +23,6 @@
 #echo "proxy_password=qwerty" >> /etc/yum.conf
 
 #ssh to Foreman and excute commands below manually:
-mkdir ~/sitesetup/
-curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/01-Startup.sh -o ~/sitesetup/01-Startup.sh
-bash ~/sitesetup/01-Startup.sh
+mkdir ~/sitesetup-pre/
+curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/01-Startup.sh -o ~/sitesetup-pre/01-Startup.sh
+bash ~/sitesetup-pre/01-Startup.sh
