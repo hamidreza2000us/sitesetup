@@ -5,7 +5,7 @@
 #######################################################################################
 echo "We need some input for intial setup. Plase be patient for a few minutes"
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-8-BaseParameters.sh -o ~/sitesetup-pre/RH7-8-BaseParameters.sh
-curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-BaseSystem.sh -o ~/sitesetup-pre/RH7-BaseSystem.sh
+curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-ForemanBaseSystem.sh -o ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/variables.sh -o ~/sitesetup-pre/variables.sh
 bash ~/sitesetup-pre/RH7-8-BaseParameters.sh
 bash ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
