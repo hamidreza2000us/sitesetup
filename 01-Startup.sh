@@ -16,4 +16,5 @@ echo -e "\n\r\n\r\n\rThere is no other input from your side. So relax. this setu
 git clone https://github.com/hamidreza2000us/sitesetup.git
 cp ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
+scp -r ~/sitesetup root@$IDMIP:~/
 
