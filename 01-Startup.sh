@@ -11,7 +11,7 @@ bash ~/sitesetup-pre/RH7-8-BaseParameters.sh
 bash ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
 ssh-keygen -t rsa
 ssh-copy-id root@$IDMIP
-echo "\n\r\n\r\n\rThere is no other input from your side. So relax. this setup would takes hours to complete\n\r\n\r\n\r"
+echo -e "\n\r\n\r\n\rThere is no other input from your side. So relax. this setup would takes hours to complete\n\r\n\r\n\r"
 git clone https://github.com/hamidreza2000us/sitesetup.git
 cp ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
