@@ -24,6 +24,7 @@ echo "export IDMNETMASK=$IDMNETMASK" >> ~/sitesetup-pre/variables.sh
 echo "export IDMGW=$IDMGW" >> ~/sitesetup-pre/variables.sh
 echo "export IDMDomain=$IDMDomain" >> ~/sitesetup-pre/variables.sh
 echo "export IDMRealm=$IDMRealm" >> ~/sitesetup-pre/variables.sh
+echo "export IDMPass=$IDMPass" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanHOSTNAME=$ForemanHOSTNAME" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanIP=$ForemanIP" >> ~/sitesetup-pre/variables.sh
 echo "export ForemanNETMASK=$ForemanNETMASK" >> ~/sitesetup-pre/variables.sh
