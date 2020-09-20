@@ -1,8 +1,8 @@
 #!/bin/bash
 #This script get and set basic network information 
-if [[ -f variables.sh ]]
+if [[ -f ~/sitesetup-pre/variables.sh ]]
 then
-  source variables.sh
+  source ~/sitesetup-pre/variables.sh
 fi
 
 read -rp "IDM Hostname to use: ($IDMHOSTNAME): " choice; [[ -n "${choice}"  ]] &&  export IDMHOSTNAME="$choice"; 
@@ -15,12 +15,12 @@ read -rp "Foreman Netmask to use (just the number of bits): ($ForemanNETMASK): "
 read -rp "Foreman GW to use: ($ForemanGW): " choice; [[ -n "${choice}"  ]] &&  export ForemanGW="$choice";
 read -rp "Foreman Global DNS to use: ($ForemanDNSSERVER): " choice;	[[ -n "${choice}"  ]] &&  export ForemanDNSSERVER="$choice";
 
-echo "export IDMHOSTNAME=$IDMHOSTNAME" > variables.sh
-echo "export IDMIP=$IDMIP" >> variables.sh
-echo "export IDMNETMASK=$IDMNETMASK" >> variables.sh
-echo "export IDMGW=$IDMGW" >> variables.sh
-echo "export ForemanHOSTNAME=$ForemanHOSTNAME" >> variables.sh
-echo "export ForemanIP=$ForemanIP" >> variables.sh
-echo "export ForemanNETMASK=$ForemanNETMASK" >> variables.sh
-echo "export ForemanGW=$ForemanGW" >> variables.sh
-echo "export ForemanDNSSERVER=$ForemanDNSSERVER" >> variables.sh
+echo "export IDMHOSTNAME=$IDMHOSTNAME" > ~/sitesetup-pre/variables.sh
+echo "export IDMIP=$IDMIP" >> ~/sitesetup-pre/variables.sh
+echo "export IDMNETMASK=$IDMNETMASK" >> ~/sitesetup-pre/variables.sh
+echo "export IDMGW=$IDMGW" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanHOSTNAME=$ForemanHOSTNAME" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanIP=$ForemanIP" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanNETMASK=$ForemanNETMASK" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanGW=$ForemanGW" >> ~/sitesetup-pre/variables.sh
+echo "export ForemanDNSSERVER=$ForemanDNSSERVER" >> ~/sitesetup-pre/variables.sh

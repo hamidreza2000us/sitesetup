@@ -6,11 +6,12 @@
 echo "We need some input for intial setup. Plase be patient for a few minutes"
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-8-BaseParameters.sh -o ~/sitesetup-pre/RH7-8-BaseParameters.sh
 curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/RH7-BaseSystem.sh -o ~/sitesetup-pre/RH7-BaseSystem.sh
+curl https://raw.githubusercontent.com/hamidreza2000us/sitesetup/master/variables.sh -o ~/sitesetup-pre/variables.sh
 bash ~/sitesetup-pre/RH7-8-BaseParameters.sh
 bash ~/sitesetup-pre/RH7-ForemanBaseSystem.sh
 ssh-keygen -t rsa
 ssh-copy-id root@$IDMIP
-echo "There is no other input from your side. So relax. this setup would takes hours to complete"
+echo "\n\r\n\r\n\rThere is no other input from your side. So relax. this setup would takes hours to complete\n\r\n\r\n\r"
 git clone https://github.com/hamidreza2000us/sitesetup.git
 cp ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
