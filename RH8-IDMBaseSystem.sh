@@ -12,18 +12,19 @@ NETMASK=${NETMASK:="$(ip a sh | grep "ens" | grep "inet" |  awk '{print $2}' |  
 if [[ $IDMNETMASK != $NETMASK ]] ; then Fault=true ; fi
 GW=${GW:="$(ip route get 8.8.8.8 | awk '{print $3; exit}')"}
 if [[ $IDMGW != $GW ]] ; then Fault=true ; fi
-ENS=${ENS:="$(ip a sh | grep -B2 $ForemanIP |grep ": ens" | awk '{print $2}' | sed -e "s/://g")"}
+ENS=${ENS:="$(ip a sh | grep -B2 $IDMIP |grep ": ens" | awk '{print $2}' | sed -e "s/://g")"}
 if [[ -z $ENS ]] ; then Fault=true ; fi
 if [[ $Fault == true ]]
 then
 	echo "There is a problem between running ip configurations and setup variables"
 	echo "Setup can't continue. Please resolve the issue and run it again"
+	exit
 fi
 
 hostnamectl set-hostname $IDMHOSTNAME
 nmcli con add con-name fixed ifname $ENS type ethernet connection.autoconnect yes ipv4.method manual ipv4.dns $ForemanIP ipv4.gateway $IDMGW ipv4.addresses $IDMIP/$IDMNETMASK 
 nmcli con up fixed
-nmcli con sh | grep " --" | awk '{print $1}' | xargs nmcli con del
+nmcli --fields UUID,TYPE,DEVICE  con sh | grep " --" | awk '{print $1}' | xargs nmcli con del
 
 if [ ! -d /mnt/cdrom ] ; then mkdir /mnt/cdrom ; fi
 if [ $(df | grep /mnt/cdrom | grep /dev/sr0 | wc -l) == 0 ] 
