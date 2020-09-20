@@ -17,6 +17,6 @@ git clone https://github.com/hamidreza2000us/sitesetup.git
 cp ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
 scp -r ~/sitesetup root@$IDMIP:~/
-ssh $IDMIP 02-IDMHostsetup.sh
+ssh $IDMIP ~/sitesetup/02-IDMHostsetup.sh
 
 
