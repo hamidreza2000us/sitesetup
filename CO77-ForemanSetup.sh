@@ -2,28 +2,29 @@ source ~/sitesetup/variables.sh
 domain=$ForemanHOSTNAME
 domainname=$IDMDomain
 pass=$ForemanPass
-interface=$(nmcli dev | grep connected | awk  '{print $1}')
-subnetname=$(echo ${ForemanIP} | awk -F. '{print "subnet"$3}')
 
 gw=$ForemanGW
 dns=$IDMIP
+interface=$(nmcli dev | grep connected | awk  '{print $1}')
+subnetname=$(echo ${ForemanIP} | awk -F. '{print "subnet"$3}')
 IPRange=$(echo ${ForemanIP} | awk -F. '{print $1"."$2"."$3}')
 startip=$IPRange.50
 endip=$IPRange.100
 network=$IPRange.0
 netmask=255.255.255.0
+
 idmhost=$IDMHOSTNAME
-idmuser=admin
 idmpass=$IDMPass
 idmdn=$(echo $IDMDomain | awk -F. '{print "dc="$1",dc="$2}')
-idmdn="dc=myhost ,dc=com"
+idmdn="dc=myhost,dc=com"
 idmrealm=$IDMRealm
 
 #default Values
+idmuser=admin
 newsyspass=Iahoora@123
-OS=RH
+OS=CentOS
 major=7
-minor=7
+minor=8.2003
 ################################################################installation#########################################################################
 #########################package install############################
 yum install -y yum-utils 
@@ -55,7 +56,7 @@ foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-
 --enable-foreman-cli-discovery --enable-foreman-cli-openscap --enable-foreman-cli-remote-execution --enable-foreman-cli-tasks \
 --enable-foreman-cli-templates  --enable-foreman-cli-ansible --enable-foreman-proxy --enable-foreman-proxy-plugin-ansible  \
 --enable-foreman-proxy-plugin-discovery  --enable-foreman-proxy-plugin-remote-execution-ssh \
---foreman-plugin-tasks-automatic-cleanup true \
+--foreman-plugin-tasks-automatic-cleanup true --foreman-proxy-http true \
 --foreman-proxy-bmc true \
 --foreman-proxy-plugin-discovery-install-images true \
 --foreman-proxy-dhcp true \
@@ -104,12 +105,12 @@ hammer lifecycle-environment create  --description "prod"  --name prod  --label 
 hammer domain update --name $domainname --organization-id 1
 hammer subnet create --name $subnetname --network $network --mask $netmask --gateway $gw  \
 --dns-primary $dns --ipam DHCP --boot-mode DHCP --from $startip --to $endip  \
---dhcp $domain  --tftp $domain --discovery-id 1 --httpboot-id 1 --template-id 1 --domains $domainname --organization-id 1
+--dhcp $domain  --tftp $domain --discovery-id 1 --httpboot-id 1 --domains $domainname --organization-id 1
 #########################medium config##################
 
 mount -o ro /dev/cdrom /mnt/cdrom
 mkdir -p /var/www/html/pub/media/
-cp -r /mnt/cdrom /var/www/html/pub/media
+/usr/bin/cp -rf /mnt/cdrom /var/www/html/pub/media
 mv /var/www/html/pub/media/cdrom /var/www/html/pub/media/$OS$major.$minor
 restorecon -Rv /var/www/html/pub/media/$OS$major.$minor
 hammer product create --name $OS --label $OS --organization-id 1
@@ -121,7 +122,7 @@ hammer repository synchronize  --organization-id 1 --product $OS  --name $OS$maj
 #########################os config##################
 hammer os create --architectures x86_64 --name $OS --media $OS$major.$minor --partition-tables "Kickstart default" --major $major --minor $minor \
 --provisioning-templates "PXELinux global default" --family "Redhat"
-hammer template add-operatingsystem --name "PXELinux global default" --operatingsystem "$OS$major.$minor"
+hammer template add-operatingsystem --name "PXELinux global default" --operatingsystem "$OS $major.$minor"
  
 #########################contentview config##################   
 hammer content-view create --name contentview01 --label contentview01 --organization-id 1 
@@ -134,8 +135,8 @@ hammer activation-key add-subscription --name mykey01 --subscription $OS --organ
 
 #########################hostgroup config##################   
 hammer hostgroup create --name hostgroup01 --lifecycle-environment Library   \
---architecture x86_64 --root-pass $newsyspass --organization-id 1 \
---operatingsystem "myCent 7.7" --medium $OS$major.$minor --partition-table "Kickstart default"  \
+--architecture x86_64 --root-password $newsyspass --organization-id 1 \
+--operatingsystem "$OS $major.$minor" --medium $OS$major.$minor --partition-table "Kickstart default"  \
 --pxe-loader 'PXELinux BIOS'   --domain $domainname  --subnet $subnetname    \
 --content-view contentview01 --content-source $domain --realm $idmrealm 
 #########################hostgroup parameter##################   
@@ -194,16 +195,16 @@ hammer template dump --name "Kickstart default" > /tmp/kickdefaulttemplate
 echo "%addon com_redhat_kdump --disable" >> /tmp/kickdefaulttemplate
 echo "%end" >> /tmp/kickdefaulttemplate
 hammer template create --file /tmp/kickdefaulttemplate --name "MyKickstart01" --type "provision" --organization-id 1
-hammer template add-operatingsystem --name "MyKickstart01" --operatingsystem "$OS$major.$minor"
-osid=$(hammer --csv os list | grep "$OS$major.$minor," | awk -F, {'print $1'})
+hammer template add-operatingsystem --name "MyKickstart01" --operatingsystem "$OS $major.$minor"
+osid=$(hammer --csv os list | grep "$OS $major.$minor," | awk -F, {'print $1'})
 SATID=$(hammer --csv template list  | grep "provision" | grep "MyKickstart01," | cut -d, -f1)
 hammer os set-default-template --id $osid --provisioning-template-id $SATID
 
 
-#hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $domain \
-# --medium $OS$major.$minor --partition-table "Kickstart default" --pxe-loader "PXELinux BIOS"  \
-# --organization-id 1  --location "Default Location" --interface mac=00:0C:29:2B:7B:C8 \
-# --build true --enabled true --managed true
+hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $domain \
+ --medium $OS$major.$minor --partition-table "Kickstart default" --pxe-loader "PXELinux BIOS"  \
+ --organization-id 1  --location "Default Location" --interface mac=00:0C:29:2B:7B:C8 \
+ --build true --enabled true --managed true
 
 ###############################
 #curl --insecure --output katello-ca-consumer-latest.noarch.rpm  https://$domain/pub/katello-ca-consumer-latest.noarch.rpm
