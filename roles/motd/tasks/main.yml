@@ -1,0 +1,15 @@
+---
+  - name: copy script
+    copy:
+      src: motdmaker.sh
+      dest: /tmp/motdmaker.sh
+      mode: 0700
+
+  - name: run script
+    command: bash /tmp/motdmaker.sh
+    register: motdOutput
+
+  - name: copy the output to motd
+    copy:
+      content: "{{ motdOutput.stdout }}"
+      dest: /etc/motd

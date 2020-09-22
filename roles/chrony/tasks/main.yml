@@ -1,0 +1,31 @@
+---
+#
+#  hosts: myhost01.myhost.com
+#  tasks:
+  - name: install chrony
+    yum: 
+      name: ['chrony', 'augeas']
+      state: installed
+#    with_items:
+#      - chrony
+#      - augeas
+
+ 
+  - name: remove ntp
+    yum: 
+      name: ntp
+      state: absent
+
+  - name: change chrony config
+    command: augtool set /files/etc/chrony.conf/server[1] 192.168.13.11
+
+  - name: change chrony config
+    command: augtool set /files/etc/chrony.conf/server[1]/iburst
+
+  - name: start chrony
+    service:
+      name: chronyd
+      state: restarted
+      enabled: true
+
+      
