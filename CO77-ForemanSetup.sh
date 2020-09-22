@@ -180,25 +180,26 @@ yum-utils
 bind-utils
 sysstat
 EOF
-hammer template create --name "MyKickstart01 custom packages" --type snippet --file /tmp/packages --organization-id 1
+hammer template create --name "Kickstart default custom packages" --type snippet --file /tmp/packages --organization-id 1
 
 cat >  /tmp/post << EOF
-#%addon com_redhat_kdump --disable
-#%end
+sed -i 's/crashkernel=auto//g' /etc/default/grub
+grub2-mkconfig > /boot/grub2/grub.cfg
 systemctl disable kdump.service
 systemctl mask kdump.service
-#ls -d /etc/yum.repos.d/* | grep -v redhat.repo |xargs -I % mv % %.bkp
-EOF
-hammer template create --name "MyKickstart01 custom post" --type snippet --file /tmp/post --organization-id 1
 
-hammer template dump --name "Kickstart default" > /tmp/kickdefaulttemplate
-echo "%addon com_redhat_kdump --disable" >> /tmp/kickdefaulttemplate
-echo "%end" >> /tmp/kickdefaulttemplate
-hammer template create --file /tmp/kickdefaulttemplate --name "MyKickstart01" --type "provision" --organization-id 1
-hammer template add-operatingsystem --name "MyKickstart01" --operatingsystem "$OS $major.$minor"
-osid=$(hammer --csv os list | grep "$OS $major.$minor," | awk -F, {'print $1'})
-SATID=$(hammer --csv template list  | grep "provision" | grep "MyKickstart01," | cut -d, -f1)
-hammer os set-default-template --id $osid --provisioning-template-id $SATID
+ls -d /etc/yum.repos.d/* | grep -v redhat.repo |xargs -I % mv % %.bkp
+EOF
+hammer template create --name "Kickstart default custom post" --type snippet --file /tmp/post --organization-id 1
+
+#hammer template dump --name "Kickstart default" > /tmp/kickdefaulttemplate
+#echo "%addon com_redhat_kdump --disable" >> /tmp/kickdefaulttemplate
+#echo "%end" >> /tmp/kickdefaulttemplate
+#hammer template create --file /tmp/kickdefaulttemplate --name "MyKickstart01" --type "provision" --organization-id 1
+#hammer template add-operatingsystem --name "MyKickstart01" --operatingsystem "$OS$major.$minor"
+#osid=$(hammer --csv os list | grep "$OS$major.$minor," | awk -F, {'print $1'})
+#SATID=$(hammer --csv template list  | grep "provision" | grep "MyKickstart01," | cut -d, -f1)
+#hammer os set-default-template --id $osid --provisioning-template-id $SATID
 
 
 hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $domain \
