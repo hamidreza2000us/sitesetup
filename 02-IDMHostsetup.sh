@@ -6,6 +6,7 @@
 #ip a a 192.168.13.11/24 dev ens160
 #ip route add default via 192.168.13.2 dev ens160
 
+######?????????????find a way to disable dnssec -> it cause problem with forward requests
 bash ~/sitesetup/RH8-IDMBaseSystem.sh
 bash ~/sitesetup/RH7-8-SetupChrony.sh
 bash ~/sitesetup/RH82-IDMSetup.sh

@@ -88,8 +88,7 @@ hammer ansible roles import --role-names rhel-system-roles.timesync --proxy-id 1
 hammer ansible variables create --variable timesync_ntp_servers --variable-type array --override true \
 --default-value  "[{\"hostname\":\"$idmhost\"}]" --ansible-role  rhel-system-roles.timesync --hidden-value false
 
-ansible-galaxy  install theforeman.foreman_scap_client -p /usr/share/ansible/roles/
-foreman-rake foreman_openscap:bulk_upload:default
+
 #########################ldap config##################
 hammer auth-source ldap create --name $idmhost --host $idmhost --server-type free_ipa \
 --account $idmuser --account-password "$idmpass" --base-dn $idmdn  --onthefly-register true \
@@ -162,7 +161,12 @@ hammer hostgroup set-parameter --hostgroup hostgroup01  --name realm.realm_type 
 hammer hostgroup set-parameter --hostgroup hostgroup01  --name enable-epel --parameter-type boolean --value false
 ######################################################################################################
 
- 
+#########################scap config##################
+ansible-galaxy  install theforeman.foreman_scap_client -p /usr/share/ansible/roles/
+foreman-rake foreman_openscap:bulk_upload:default
+hammer ansible roles import --role-names theforeman.foreman_scap_client --proxy-id 1
+hammer ansible variable import --proxy-id 1
+hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups hostgroup01 --name policy01  --scap-content-profile-id 26  --scap-content-id 7
 
 ###############################################Templates###############################################
 cat >  /tmp/packages << EOF
@@ -179,8 +183,11 @@ vim
 yum-utils
 bind-utils
 sysstat
+xorg-x11-xauth 
+dbus-x11
 EOF
 hammer template create --name "Kickstart default custom packages" --type snippet --file /tmp/packages --organization-id 1
+hammer template create --name "Kickstart scap custom packages" --type snippet --file /tmp/packages --organization-id 1
 
 cat >  /tmp/post << EOF
 sed -i 's/crashkernel=auto//g' /etc/default/grub
@@ -191,16 +198,15 @@ systemctl mask kdump.service
 ls -d /etc/yum.repos.d/* | grep -v redhat.repo |xargs -I % mv % %.bkp
 EOF
 hammer template create --name "Kickstart default custom post" --type snippet --file /tmp/post --organization-id 1
+hammer template create --name "Kickstart scap custom post" --type snippet --file /tmp/post --organization-id 1
 
-#hammer template dump --name "Kickstart default" > /tmp/kickdefaulttemplate
-#echo "%addon com_redhat_kdump --disable" >> /tmp/kickdefaulttemplate
-#echo "%end" >> /tmp/kickdefaulttemplate
-#hammer template create --file /tmp/kickdefaulttemplate --name "MyKickstart01" --type "provision" --organization-id 1
-#hammer template add-operatingsystem --name "MyKickstart01" --operatingsystem "$OS$major.$minor"
-#osid=$(hammer --csv os list | grep "$OS$major.$minor," | awk -F, {'print $1'})
-#SATID=$(hammer --csv template list  | grep "provision" | grep "MyKickstart01," | cut -d, -f1)
-#hammer os set-default-template --id $osid --provisioning-template-id $SATID
-
+hammer template dump --name "Kickstart default" > /tmp/kickdefaulttemplate
+sed  -i '/^skipx.*/a \\n%addon org_fedora_oscap\ncontent-type = scap-security-guide\nprofile = pci-dss\n%end' /tmp/kickdefaulttemplate
+hammer template create --file /tmp/kickdefaulttemplate --name "Kickstart scap" --type "provision" --organization-id 1
+hammer template add-operatingsystem --name "Kickstart scap" --operatingsystem "$OS$major.$minor"
+osid=$(hammer --csv os list | grep "$OS$major.$minor," | awk -F, {'print $1'})
+SATID=$(hammer --csv template list  | grep "provision" | grep "MyKickstart01," | cut -d, -f1)
+hammer os set-default-template --id $osid --provisioning-template-id $SATID
 
 hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $domain \
  --medium $OS$major.$minor --partition-table "Kickstart default" --pxe-loader "PXELinux BIOS"  \
@@ -215,4 +221,3 @@ hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $dom
 #yum -y install katello-host-tools-tracer
 #yum -y install katello-agent
 
-#hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups hostgroup01 --name policy01  --scap-content-profile-id 40  --scap-content-id 8
