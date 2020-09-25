@@ -21,6 +21,7 @@ ssh $IDMIP bash ~/sitesetup/02-IDMHostsetup.sh
 bash ~/sitesetup/RH7-8-SetupChronyClient.sh 
 nmcli con mod fixed ipv4.dns $IDMIP
 nmcli con reload
+nmcli con up fixed
 bash ~/sitesetup/CO77-IDMRegister.sh
 #bash ~/sitesetup/CO77-ForemanSetup.sh 
 
