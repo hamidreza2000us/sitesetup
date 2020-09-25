@@ -8,8 +8,8 @@
 #2-Make sure the Installation DVD is mounted to DVD drive
 #3-Each server has only one interface
 #4-These two servers have required network access to each other or are in a same subnet
-#IPA/IDM	CPU:6C	RAM:8G	Disk:20G	OS:RH82			InternetAcess:Yes	subnet:subnet01
-#Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS7.8	InternetAcess:Yes	subnet:subnet01
+#IPA/IDM	CPU:6C	RAM:8G	Disk:20G	OS:RH82			 					InternetAcess:Yes	subnet:subnet01
+#Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS7.8(Everything version)	InternetAcess:Yes	subnet:subnet01
 #After (or during the) Installation setup IP address on both servers
 #You may find command below useful (CAPITALS should be replaced by a value)
 

@@ -33,7 +33,7 @@ augtool -s -f /tmp/hostsconfig
 #EOF
 #augtool -s -f /tmp/resolveconfig
 ReverseIP=$(echo ${IP} | awk -F. '{print $3"."$2"."$1".in-addr.arpa."}')
-ipa-server-install --realm MYHOST.COM --ds-password $IDMPass --admin-password $IDMPass --unattended --setup-dns --no-host-dns --auto-reverse --reverse-zone=$ReverseIP --forwarder $ForemanIP 
+ipa-server-install --realm $IDMRealm --ds-password $IDMPass --admin-password $IDMPass --unattended --setup-dns --no-host-dns --auto-reverse --reverse-zone=$ReverseIP --forwarder $ForemanIP 
 
 if  [  $( firewall-cmd --query-service=freeipa-ldap) == 'no'  ] ; then firewall-cmd --permanent --add-service=freeipa-ldap ; fi
 if  [  $( firewall-cmd --query-service=freeipa-ldaps) == 'no'  ] ; then firewall-cmd --permanent --add-service=freeipa-ldaps ; fi
@@ -46,4 +46,6 @@ then
 fi
 systemctl restart chronyd
 echo "$IDMPass" | kinit admin
-ipa dnszone-mod myhost.com. --allow-sync-ptr=TRUE
+ipa dnszone-mod $IDMDomain. --allow-sync-ptr=TRUE
+ipa dnszone-mod $IDMDomain. --dnssec=false
+ipa dnszone-mod $ReverseIP. --dnssec=false
