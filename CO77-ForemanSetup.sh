@@ -44,7 +44,7 @@ yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.
 yum -y install foreman-release-scl
 yum -y install katello foreman-proxy
 yum install -y https://yum.theforeman.org/client/latest/el7/x86_64/foreman-client-release-2.1.1-1.el7.noarch.rpm
-
+#yum -y install  puppet-agent-oauth
 #################realm config#######################
 echo -e "$idmpass" | foreman-prepare-realm $idmuser foremanuser
 /usr/bin/cp -f /root/freeipa.keytab /etc/foreman-proxy
@@ -159,7 +159,7 @@ hammer ansible variable update --override true  --variable ntpserver --variable-
  --default-value "$idmhost" --ansible-role  hamidreza2000us.chrony  --hidden-value false  --name ntpserver
 #########################hostgroup config##################  OK 
 hammer hostgroup create --name hostgroup01 --lifecycle-environment Library   \
---architecture x86_64 --root-password $newsyspass --organization-id 1 \
+--architecture x86_64 --root-pass $newsyspass --organization-id 1 \
 --operatingsystem "$OS $major.$minor" --medium $OS$major.$minor --partition-table "Kickstart default"  \
 --pxe-loader 'PXELinux BIOS'   --domain $domainname  --subnet $subnetname    \
 --content-view contentview01 --content-source $domain --realm $idmrealm 
@@ -192,9 +192,11 @@ hammer hostgroup set-parameter --hostgroup hostgroup01  --name enable-epel --par
 ansible-galaxy  install theforeman.foreman_scap_client -p /usr/share/ansible/roles/
 foreman-rake foreman_openscap:bulk_upload:default
 hammer ansible roles import --role-names theforeman.foreman_scap_client --proxy-id 1
-hammer ansible variable import --proxy-id 1
+hammer ansible variables import --proxy-id 1
 hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups hostgroup01 --name policy01  --scap-content-profile-id 5  --scap-content-id 2
 hammer hostgroup ansible-roles assign --name hostgroup01 --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
+hammer ansible variables update --override true  --variable foreman_scap_client_server --variable-type string \
+--default-value "$domain" --ansible-role  theforeman.foreman_scap_client  --hidden-value false  --name foreman_scap_client_server
 ###############################################Templates###############################################OK (with some fixes)
 cat >  /tmp/packages << EOF
 subscription-manager

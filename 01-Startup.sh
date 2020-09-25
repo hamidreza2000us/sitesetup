@@ -24,4 +24,4 @@ nmcli con reload
 nmcli con up fixed
 bash ~/sitesetup/CO77-IDMRegister.sh
 #bash ~/sitesetup/CO77-ForemanSetup.sh 
-
+######################################

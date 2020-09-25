@@ -11,6 +11,7 @@
 #IPA/IDM	CPU:6C	RAM:8G	Disk:20G	OS:RH82			 					InternetAcess:Yes	subnet:subnet01
 #Foreman	CPU:6C	RAM:16G	Disk:200G	OS:CentOS7.8(Everything version)	InternetAcess:Yes	subnet:subnet01
 #After (or during the) Installation setup IP address on both servers
+#this script should take about 4 Hours, depending on download speed and underlying hardware
 #You may find command below useful (CAPITALS should be replaced by a value)
 
 #nmcli dev| grep ethernet | grep connecting | awk '{print $2}' | xargs nmcli dev dis
