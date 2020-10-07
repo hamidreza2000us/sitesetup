@@ -69,17 +69,18 @@ foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-
 --foreman-plugin-tasks-automatic-cleanup true --foreman-proxy-http true \
 --foreman-proxy-bmc true \
 --foreman-proxy-plugin-discovery-install-images true \
---foreman-proxy-dhcp true \
---foreman-proxy-dhcp-interface $interface \
---foreman-proxy-dhcp-managed true \
---foreman-proxy-dhcp-range="$startip $endip" \
---foreman-proxy-dhcp-nameservers $dns \
---foreman-proxy-dhcp-gateway $gw \
 --foreman-proxy-tftp true \
 --foreman-proxy-tftp-managed true \
 --foreman-proxy-tftp-servername $domain \
 --enable-foreman-plugin-openscap --enable-foreman-proxy-plugin-openscap \
 --enable-foreman-compute-vmware  --enable-foreman-compute-openstack
+
+#--foreman-proxy-dhcp true \
+#--foreman-proxy-dhcp-interface $interface \
+#--foreman-proxy-dhcp-managed true \
+#--foreman-proxy-dhcp-range="$startip $endip" \
+#--foreman-proxy-dhcp-nameservers $dns \
+#--foreman-proxy-dhcp-gateway $gw \
 
 #########################Global config##################
 hammer settings set --name ansible_ssh_private_key_file --value /var/lib/foreman-proxy/ssh/id_rsa_foreman_proxy 
