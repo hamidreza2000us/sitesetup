@@ -49,3 +49,7 @@ echo "$IDMPass" | kinit admin
 ipa dnszone-mod $IDMDomain. --allow-sync-ptr=TRUE
 ipa dnszone-mod $IDMDomain. --dnssec=false
 ipa dnszone-mod $ReverseIP. --dnssec=false
+
+sed -i -e 's/dnssec-enable yes;/dnssec-enable no;/' /etc/named.conf
+sed -i -e 's/dnssec-validation yes;/dnssec-validation no;/' /etc/named.conf
+ipactl restart

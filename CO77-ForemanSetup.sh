@@ -43,7 +43,7 @@ yum -y localinstall https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
 yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install foreman-release-scl
 yum -y install katello foreman-proxy
-yum install -y https://yum.theforeman.org/client/latest/el7/x86_64/foreman-client-release-2.1.1-1.el7.noarch.rpm
+yum install -y https://yum.theforeman.org/client/latest/el7/x86_64/foreman-client-release.rpm
 #yum -y install  puppet-agent-oauth
 #################realm config#######################
 echo -e "$idmpass" | foreman-prepare-realm $idmuser foremanuser
@@ -58,9 +58,9 @@ firewall-cmd --reload
 ########################installation#############################
 foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-realm-principal foremanuser@$idmrealm \
 --foreman-initial-organization myorg \
---foreman-cli-foreman-url "https://$domain" \
+--foreman-cli-foreman-url "https://${domain}" \
 --foreman-cli-username admin \
---foreman-cli-password $pass  --foreman-initial-admin-password $pass \
+--foreman-cli-password ${pass}  --foreman-initial-admin-password ${pass} \
 --enable-foreman-plugin-bootdisk   --enable-foreman-plugin-discovery   --enable-foreman-plugin-setup  \
 --enable-foreman-plugin-ansible --enable-foreman-plugin-templates  --enable-foreman-cli \
 --enable-foreman-cli-discovery --enable-foreman-cli-openscap --enable-foreman-cli-remote-execution --enable-foreman-cli-tasks \
@@ -71,7 +71,7 @@ foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-
 --foreman-proxy-plugin-discovery-install-images true \
 --foreman-proxy-tftp true \
 --foreman-proxy-tftp-managed true \
---foreman-proxy-tftp-servername $domain \
+--foreman-proxy-tftp-servername ${domain} \
 --enable-foreman-plugin-openscap --enable-foreman-proxy-plugin-openscap \
 --enable-foreman-compute-vmware  --enable-foreman-compute-openstack
 
