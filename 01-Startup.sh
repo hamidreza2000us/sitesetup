@@ -14,7 +14,7 @@ ssh-keygen -t rsa
 ssh-copy-id root@$IDMIP
 echo -e "\n\r\n\r\n\rThere is no other input from your side. So relax. this setup would takes hours to complete\n\r\n\r\n\r"
 git clone https://github.com/hamidreza2000us/sitesetup.git
-cp ~/sitesetup-pre/variables.sh ~/sitesetup/
+/usr/bin/cp -f ~/sitesetup-pre/variables.sh ~/sitesetup/
 bash ~/sitesetup/RH82-DNSMasqSetup.sh
 scp -r ~/sitesetup root@$IDMIP:~/
 ssh $IDMIP bash ~/sitesetup/02-IDMHostsetup.sh

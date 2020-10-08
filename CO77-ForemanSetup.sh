@@ -42,11 +42,13 @@ yum -y localinstall https://fedorapeople.org/groups/katello/releases/yum/3.15/ka
 yum -y localinstall https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
 yum -y localinstall https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install foreman-release-scl
-yum -y install katello foreman-proxy
 yum install -y https://yum.theforeman.org/client/latest/el7/x86_64/foreman-client-release.rpm
-#yum -y install  puppet-agent-oauth
+yum -y install katello foreman-proxy
+yum -y install  puppet-agent-oauth
+
 #################realm config#######################
 echo -e "$idmpass" | foreman-prepare-realm $idmuser foremanuser
+
 /usr/bin/cp -f /root/freeipa.keytab /etc/foreman-proxy
 chown foreman-proxy:foreman-proxy /etc/foreman-proxy/freeipa.keytab
 /usr/bin/cp  -f /etc/ipa/ca.crt /etc/pki/ca-trust/source/anchors/ipa.crt
@@ -56,12 +58,15 @@ update-ca-trust
 if  [  $( firewall-cmd --query-service=RH-Satellite-6) == 'no'  ] ; then firewall-cmd --permanent --add-service=RH-Satellite-6 ; fi
 firewall-cmd --reload
 ########################installation#############################
-foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-realm-principal foremanuser@$idmrealm \
---foreman-initial-organization myorg \
+foreman-installer --scenario katello \
+--foreman-initial-organization behsa \
 --foreman-cli-foreman-url "https://${domain}" \
 --foreman-cli-username admin \
---foreman-cli-password ${pass}  --foreman-initial-admin-password ${pass} \
---enable-foreman-plugin-bootdisk   --enable-foreman-plugin-discovery   --enable-foreman-plugin-setup  \
+--foreman-cli-password ${pass}  --foreman-initial-admin-password ${pass} 
+
+foreman-installer  --foreman-proxy-realm true --foreman-proxy-realm-principal foremanuser@$idmrealm 
+
+foreman-installer --enable-foreman-plugin-bootdisk   --enable-foreman-plugin-discovery   --enable-foreman-plugin-setup  \
 --enable-foreman-plugin-ansible --enable-foreman-plugin-templates  --enable-foreman-cli \
 --enable-foreman-cli-discovery --enable-foreman-cli-openscap --enable-foreman-cli-remote-execution --enable-foreman-cli-tasks \
 --enable-foreman-cli-templates  --enable-foreman-cli-ansible --enable-foreman-proxy --enable-foreman-proxy-plugin-ansible  \
@@ -74,6 +79,8 @@ foreman-installer --scenario katello --foreman-proxy-realm true --foreman-proxy-
 --foreman-proxy-tftp-servername ${domain} \
 --enable-foreman-plugin-openscap --enable-foreman-proxy-plugin-openscap \
 --enable-foreman-compute-vmware  --enable-foreman-compute-openstack
+
+#/usr/sbin/foreman-rake apipie:cache:index
 
 #--foreman-proxy-dhcp true \
 #--foreman-proxy-dhcp-interface $interface \
@@ -113,9 +120,12 @@ hammer lifecycle-environment create  --description "prod"  --name prod  --label 
 ################################################################basic media#########################################################################
 #########################network config##################
 hammer domain update --name $domainname --organization-id 1
+#hammer subnet create --name $subnetname --network $network --mask $netmask --gateway $gw  \
+#--dns-primary $dns --ipam DHCP --boot-mode DHCP --from $startip --to $endip  \
+#--dhcp $domain  --tftp $domain --discovery-id 1 --httpboot-id 1 --domains $domainname --organization-id 1
+
 hammer subnet create --name $subnetname --network $network --mask $netmask --gateway $gw  \
---dns-primary $dns --ipam DHCP --boot-mode DHCP --from $startip --to $endip  \
---dhcp $domain  --tftp $domain --discovery-id 1 --httpboot-id 1 --domains $domainname --organization-id 1
+--dns-primary $dns --tftp $domain --discovery-id 1 --httpboot-id 1 --domains $domainname --organization-id 1
 #########################medium config##################OK
 
 mount -o ro /dev/cdrom /mnt/cdrom
@@ -155,8 +165,8 @@ ansible-galaxy install hamidreza2000us.chrony -p /usr/share/ansible/roles/
 hammer ansible roles import --role-names hamidreza2000us.chrony --proxy-id 1
 ansible-galaxy install hamidreza2000us.motd -p /usr/share/ansible/roles/
 hammer ansible roles import --role-names hamidreza2000us.motd --proxy-id 1
-hammer ansible variable import --proxy-id 1
-hammer ansible variable update --override true  --variable ntpserver --variable-type string  \
+hammer ansible variables import --proxy-id 1
+hammer ansible variables update --override true  --variable ntpserver --variable-type string  \
  --default-value "$idmhost" --ansible-role  hamidreza2000us.chrony  --hidden-value false  --name ntpserver
 #########################hostgroup config##################  OK 
 hammer hostgroup create --name hostgroup01 --lifecycle-environment Library   \

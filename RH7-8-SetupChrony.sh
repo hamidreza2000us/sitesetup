@@ -1,5 +1,7 @@
 #!/bin/bash
-mynet="192.168.0.0/16"
+export IP=${IP:="$(ip route get 8.8.8.8 | awk '{print $7; exit}')"}
+mynet=$(echo ${IP} | awk -F. '{print $1"."$2".0.0/16"}')
+
 yum -y install augeas chrony
 cat > /tmp/chronyconfig << EOF
 defvar mypath /files/etc/chrony.conf
