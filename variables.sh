@@ -7,7 +7,7 @@ export IDMPass=Iahoora@123
 export IDMRealm=MYHOST.COM
 
 export ForemanHOSTNAME=foreman.myhost.com
-export ForemanIP=192.168.13.250
+export ForemanIP=192.168.13.12
 export ForemanNETMASK=24
 export ForemanGW=192.168.13.2
 export ForemanDNSSERVER=8.8.8.8
