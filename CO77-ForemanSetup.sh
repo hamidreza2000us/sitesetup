@@ -200,6 +200,7 @@ hammer hostgroup set-parameter --hostgroup hostgroup01  --name enable-epel --par
 
 
 #########################scap config################## Ok (change scap profile to centos)
+#ansible-galaxy install giovtorres.postfix-null-client -p /usr/share/ansible/roles/
 ansible-galaxy  install theforeman.foreman_scap_client -p /usr/share/ansible/roles/
 foreman-rake foreman_openscap:bulk_upload:default
 hammer ansible roles import --role-names theforeman.foreman_scap_client --proxy-id 1
