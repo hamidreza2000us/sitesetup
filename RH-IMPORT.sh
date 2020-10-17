@@ -61,7 +61,8 @@ hammer content-view publish --name $contentview --organization-id 1 #--async
 hammer content-view  version promote --organization-id 1  --content-view $contentview --to-lifecycle-environment dev
 
 hammer activation-key create --name $keyname --organization-id 1 --lifecycle-environment Library --content-view $contentview
-hammer activation-key add-subscription --name $keyname --subscription $OS --organization-id 1
+##this on has some issue to find
+#hammer activation-key add-subscription --name $keyname --subscription $OS --organization-id 1
 
 #########################hostgroup config##################  OK 
 hammer hostgroup create --name $hostgroup --lifecycle-environment Library   \
@@ -95,6 +96,6 @@ hammer hostgroup set-parameter --hostgroup $hostgroup  --name enable-epel --para
 hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
 ###############################################Templates###############################################OK (with some fixes)
 
-hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups $hostgroup  --name policy-rh7\
+hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups $hostgroup  --name policy-rh7 \
  --scap-content-profile-id 36  --scap-content-id 7
 hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"

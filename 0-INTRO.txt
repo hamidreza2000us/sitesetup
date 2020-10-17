@@ -20,6 +20,15 @@
 #echo "nameserver 8.8.8.8" > /etc/resolv.conf
 #ping -c1 GW
 
+#Or preferably use commands below:
+#On foreman server:
+#nmcli con mod ens33 ipv4.method manual ipv4.addresses 192.168.13.12/24 ipv4.dns 8.8.8.8 ipv4.gateway 192.168.13.2
+#nmcli con up ens33
+
+#On IDM server:
+#nmcli con mod ens160 ipv4.method manual ipv4.addresses 192.168.13.11/24 ipv4.dns 192.168.13.12 ipv4.gateway 192.168.13.2
+#nmcli con up ens160
+
 #if required, setup proxy for Foreman server
 #export http_proxy=http://DOMAIN\\USERN\@ME:PASSWORD@SERVER:PORT > /etc/profile.d/http_proxy.sh
 #echo "proxy=http://proxy.example.com:3128" >> /etc/yum.conf

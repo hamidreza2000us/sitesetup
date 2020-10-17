@@ -82,12 +82,13 @@ foreman-installer --enable-foreman-plugin-bootdisk   --enable-foreman-plugin-dis
 
 #/usr/sbin/foreman-rake apipie:cache:index
 
+#foreman-installer \
 #--foreman-proxy-dhcp true \
 #--foreman-proxy-dhcp-interface $interface \
 #--foreman-proxy-dhcp-managed true \
 #--foreman-proxy-dhcp-range="$startip $endip" \
 #--foreman-proxy-dhcp-nameservers $dns \
-#--foreman-proxy-dhcp-gateway $gw \
+#--foreman-proxy-dhcp-gateway $gw 
 
 #########################Global config##################
 hammer settings set --name ansible_ssh_private_key_file --value /var/lib/foreman-proxy/ssh/id_rsa_foreman_proxy 
@@ -145,8 +146,8 @@ hammer repository   create  --name foreman-client  --content-type yum  --organiz
 --product $OS --url https://yum.theforeman.org/client/2.1/el7/x86_64/ --download-policy immediate --mirror-on-sync false
 hammer repository synchronize  --organization-id 1 --product $OS  --name foreman-client #--async
 #########################os config##################Ok-SoSO (why PXElinux?)
-#hammer os create --architectures x86_64 --name $OS --media $OS$major.$minor --partition-tables "Kickstart default" --major $major --minor $minor \
-#--provisioning-templates "PXELinux global default" --family "Redhat"
+hammer os create --architectures x86_64 --name $OS --media $OS$major.$minor --partition-tables "Kickstart default" --major $major --minor $minor \
+--provisioning-templates "PXELinux global default" --family "Redhat"
 hammer os update --title "$OS $major.$minor" --media $OS$major.$minor
 hammer template add-operatingsystem --name "PXELinux global default" --operatingsystem "$OS $major.$minor"
  
@@ -215,7 +216,6 @@ subscription-manager
 ipa-client
 bash-completion
 tuned
-chrony
 lsof
 nmap
 tmux
