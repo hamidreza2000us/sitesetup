@@ -44,8 +44,8 @@ hammer repository   create  --name $OS$major.$minor    --content-type yum  --org
 --product $OS --url http://$domain/pub/media/$OS$major.$minor --download-policy immediate --mirror-on-sync false
 hammer repository synchronize  --organization-id 1 --product $OS  --name $OS$major.$minor #--async
 
-hammer repository   create  --name rh-foreman-client  --content-type yum  --organization-id 1 \
---product $OS --url http://192.168.13.120/pub/export/sat-tools/ --download-policy immediate --mirror-on-sync false
+#hammer repository   create  --name rh-foreman-client  --content-type yum  --organization-id 1 \
+#--product $OS --url http://192.168.13.120/pub/export/sat-tools/ --download-policy immediate --mirror-on-sync false
 #hammer repository synchronize  --organization-id 1 --product $OS  --name rh-foreman-client #--async
 #########################os config##################Ok-SoSO (why PXElinux?)
 hammer os create --architectures x86_64 --name $OS --media $OS$major.$minor --partition-tables "Kickstart default" --major $major --minor $minor \
@@ -56,7 +56,7 @@ hammer template add-operatingsystem --name "PXELinux global default" --operating
 #########################contentview config##################   OK
 hammer content-view create --name $contentview --label $contentview --organization-id 1 
 hammer content-view add-repository --name $contentview --repository $OS$major.$minor --organization-id 1 
-hammer content-view add-repository --name $contentview --repository rh-foreman-client --organization-id 1
+#hammer content-view add-repository --name $contentview --repository rh-foreman-client --organization-id 1
 hammer content-view publish --name $contentview --organization-id 1 #--async
 hammer content-view  version promote --organization-id 1  --content-view $contentview --to-lifecycle-environment dev
 

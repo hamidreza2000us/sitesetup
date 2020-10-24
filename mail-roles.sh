@@ -1,5 +1,5 @@
 #add mail record to idm
-ipa dnsrecord-add myhost.com mail --cname-rec myhost01
+#ipa dnsrecord-add myhost.com mail --cname-rec myhost01
 ipa dnsrecord-add myhost.com @ --mx-rec="0 mail.myhost.com."
 ##################################################################
 #add role for client to send the mail to relay host

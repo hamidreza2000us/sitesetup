@@ -82,13 +82,13 @@ foreman-installer --enable-foreman-plugin-bootdisk   --enable-foreman-plugin-dis
 
 #/usr/sbin/foreman-rake apipie:cache:index
 
-#foreman-installer \
-#--foreman-proxy-dhcp true \
-#--foreman-proxy-dhcp-interface $interface \
-#--foreman-proxy-dhcp-managed true \
-#--foreman-proxy-dhcp-range="$startip $endip" \
-#--foreman-proxy-dhcp-nameservers $dns \
-#--foreman-proxy-dhcp-gateway $gw 
+# foreman-installer \
+# --foreman-proxy-dhcp true \
+# --foreman-proxy-dhcp-interface $interface \
+# --foreman-proxy-dhcp-managed true \
+# --foreman-proxy-dhcp-range="$startip $endip" \
+# --foreman-proxy-dhcp-nameservers $dns \
+# --foreman-proxy-dhcp-gateway $gw 
 
 #########################Global config##################
 hammer settings set --name ansible_ssh_private_key_file --value /var/lib/foreman-proxy/ssh/id_rsa_foreman_proxy 
