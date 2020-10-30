@@ -228,6 +228,7 @@ bind-utils
 sysstat
 xorg-x11-xauth 
 dbus-x11
+splunkforwarder
 EOF
 hammer template create --name "Kickstart default custom packages" --type snippet --file /tmp/packages --organization-id 1
 hammer template create --name "Kickstart scap custom packages" --type snippet --file /tmp/packages --organization-id 1
@@ -265,3 +266,27 @@ hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $dom
 #yum -y install katello-host-tools-tracer
 #yum -y install katello-agent
 
+# ansible-galaxy install robertdebock.auditd  -p /usr/share/ansible/roles/
+# ansible-galaxy install robertdebock.rsyslog  -p /usr/share/ansible/roles/
+
+###############################upload splunk packages###############################
+mkdir -p /var/www/html/pub/packages/Splunk
+curl -o /var/www/html/pub/packages/Splunk/splunk-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm \
+https://download.splunk.com/products/splunk/releases/8.1.0/linux/splunk-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+curl -o /var/www/html/pub/packages/Splunk/splunkforwarder-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm \
+https://download.splunk.com/products/universalforwarder/releases/8.1.0/linux/splunkforwarder-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+hammer repository   create  --name Splunk  --content-type yum  --organization-id 1 \
+--product $OS --download-policy immediate --mirror-on-sync false
+
+hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+--path /var/www/html/pub/packages/Splunk/splunk-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+--path /var/www/html/pub/packages/Splunk/splunkforwarder-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+hammer content-view add-repository --name contentview01 --repository Splunk --organization-id 1
+hammer content-view publish --name contentview01 --organization-id 1 #--async
+contentVersion=$( hammer --output csv content-view version  list --content-view contentview01  --organization-id 1 | grep Library | awk -F, '{print $3}')
+hammer content-view  version promote --organization-id 1  --content-view contentview01 --to-lifecycle-environment dev --version $contentVersion

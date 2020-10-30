@@ -99,3 +99,18 @@ hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidre
 hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups $hostgroup  --name policy-rh7 \
  --scap-content-profile-id 36  --scap-content-id 7
 hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
+
+###############################################Import Splunk Packages###############################################
+hammer repository   create  --name Splunk  --content-type yum  --organization-id 1 \
+--product $OS --download-policy immediate --mirror-on-sync false
+
+hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+--path /var/www/html/pub/packages/Splunk/splunk-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+--path /var/www/html/pub/packages/Splunk/splunkforwarder-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
+
+hammer content-view add-repository --name $contentview --repository Splunk --organization-id 1
+hammer content-view publish --name $contentview --organization-id 1 #--async
+contentVersion=$( hammer --output csv content-view version  list --content-view $contentview  --organization-id 1 | grep Library | awk -F, '{print $3}')
+hammer content-view  version promote --organization-id 1  --content-view $contentview --to-lifecycle-environment dev --version $contentVersion
