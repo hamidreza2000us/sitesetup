@@ -93,21 +93,20 @@ hammer hostgroup set-parameter --hostgroup $hostgroup  --name freeipa_domain --p
 hammer hostgroup set-parameter --hostgroup $hostgroup  --name realm.realm_type --parameter-type string --value FreeIPA
 hammer hostgroup set-parameter --hostgroup $hostgroup  --name enable-epel --parameter-type boolean --value false
 ######################################################################################################
-hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
 ###############################################Templates###############################################OK (with some fixes)
 
 hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups $hostgroup  --name policy-rh7 \
  --scap-content-profile-id 36  --scap-content-id 7
-hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
+hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,hamidreza2000us.splunk_forwarder"
 
 ###############################################Import Splunk Packages###############################################
 hammer repository   create  --name Splunk  --content-type yum  --organization-id 1 \
 --product $OS --download-policy immediate --mirror-on-sync false
 
-hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+hammer repository upload-content --name Splunk --organization-id 1 --product $OS \
 --path /var/www/html/pub/packages/Splunk/splunk-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
 
-hammer repository upload-content --name Splunk --organization-id 1 --product CentOS \
+hammer repository upload-content --name Splunk --organization-id 1 --product $OS \
 --path /var/www/html/pub/packages/Splunk/splunkforwarder-8.1.0-f57c09e87251-linux-2.6-x86_64.rpm
 
 hammer content-view add-repository --name $contentview --repository Splunk --organization-id 1

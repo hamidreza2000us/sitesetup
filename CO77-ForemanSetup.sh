@@ -162,6 +162,8 @@ hammer activation-key create --name mykey01 --organization-id 1 --lifecycle-envi
 hammer activation-key add-subscription --name mykey01 --subscription $OS --organization-id 1
 
 #########################ansible config##################   OK
+ansible-galaxy install hamidreza2000us.splunk_forwarder  -p /usr/share/ansible/roles/
+hammer ansible roles import --proxy-id 1 --role-names hamidreza2000us.splunk_forwarder
 ansible-galaxy install hamidreza2000us.chrony -p /usr/share/ansible/roles/
 hammer ansible roles import --role-names hamidreza2000us.chrony --proxy-id 1
 ansible-galaxy install hamidreza2000us.motd -p /usr/share/ansible/roles/
@@ -207,7 +209,7 @@ foreman-rake foreman_openscap:bulk_upload:default
 hammer ansible roles import --role-names theforeman.foreman_scap_client --proxy-id 1
 hammer ansible variables import --proxy-id 1
 hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups hostgroup01 --name policy01  --scap-content-profile-id 5  --scap-content-id 2
-hammer hostgroup ansible-roles assign --name hostgroup01 --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,theforeman.foreman_scap_client"
+hammer hostgroup ansible-roles assign --name hostgroup01 --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,hamidreza2000us.splunk_forwarder"
 hammer ansible variables update --override true  --variable foreman_scap_client_server --variable-type string \
 --default-value "$domain" --ansible-role  theforeman.foreman_scap_client  --hidden-value false  --name foreman_scap_client_server
 ###############################################Templates###############################################OK (with some fixes)
