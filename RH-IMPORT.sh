@@ -30,7 +30,7 @@ contentview=content-$OS$major-$minor
 keyname=key-$OS$major.$minor
 hostgroup=hostgroup-$OS$major.$minor
 #########################medium config##################OK
-
+# ln -s /mnt/cdrom/ /var/www/html/pub/cdrom
 mount -o ro /dev/cdrom /mnt/cdrom
 mkdir -p /var/www/html/pub/media/
 /usr/bin/cp -rf /mnt/cdrom /var/www/html/pub/media
@@ -94,11 +94,9 @@ hammer hostgroup set-parameter --hostgroup $hostgroup  --name realm.realm_type -
 hammer hostgroup set-parameter --hostgroup $hostgroup  --name enable-epel --parameter-type boolean --value false
 ######################################################################################################
 ###############################################Templates###############################################OK (with some fixes)
-
 hammer policy create --organization-id 1 --period monthly --day-of-month 1 --deploy-by ansible --hostgroups $hostgroup  --name policy-rh7 \
  --scap-content-profile-id 36  --scap-content-id 7
 hammer hostgroup ansible-roles assign --name $hostgroup --ansible-roles "hamidreza2000us.chrony,hamidreza2000us.motd,hamidreza2000us.splunk_forwarder"
-
 ###############################################Import Splunk Packages###############################################
 hammer repository   create  --name Splunk  --content-type yum  --organization-id 1 \
 --product $OS --download-policy immediate --mirror-on-sync false
@@ -113,3 +111,8 @@ hammer content-view add-repository --name $contentview --repository Splunk --org
 hammer content-view publish --name $contentview --organization-id 1 #--async
 contentVersion=$( hammer --output csv content-view version  list --content-view $contentview  --organization-id 1 | grep Library | awk -F, '{print $3}')
 hammer content-view  version promote --organization-id 1  --content-view $contentview --to-lifecycle-environment dev --version $contentVersion
+
+#hammer medium create --name Redhat7.6 --os-family Redhat --path https://foreman.myhost.com/pub/cdrom/ --organization-id 1
+#hammer os create --architectures x86_64 --name Redhat --media Redhat7.6 --partition-tables "Kickstart default" --major 7 --minor 6 \
+--provisioning-templates "PXELinux global default" --family "Redhat"
+#hammer template add-operatingsystem --name "PXELinux global default" --operatingsystem "Redhat 7.6"

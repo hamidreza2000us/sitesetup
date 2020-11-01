@@ -1,0 +1,29 @@
+rhel-7-server-extras-rpms
+rhel-7-server-openstack-13-tools-rpms
+rhel-7-server-optional-rpms
+rhel-7-server-rhceph-2-tools-rpms
+rhel-7-server-rh-common-rpms
+rhel-7-server-rpms
+rhel-7-server-rpms2
+rhel-7-server-supplementary-rpms
+rhel-ha-for-rhel-7-server-rpms
+rhel-server-rhscl-7-rpms
+
+hammer product create --name OpenStack --label OpenStack --organization-id 1
+for i in $(ls) ;do hammer repository create --content-type yum --organization-id 1 --product OpenStack --download-policy immediate --mirror-on-sync false \
+--url http://192.168.1.150/html/redhat/ --name 
+hammer repository synchronize  --organization-id 1 --product OpenStack --async --name 
+
+
+
+
+
+
+
+
+
+
+
+hammer repository create --content-type yum --organization-id 1 --product OpenStack --download-policy immediate --mirror-on-sync false \
+--url --name 
+hammer repository synchronize  --organization-id 1 --product OpenStack --async --name 

@@ -28,8 +28,15 @@ sudo -u splunk tar -xvf /tmp/splunk-add-on-for-unix-and-linux_820.tgz -C /opt/sp
 sed -i '/syslog/!b;n;cdisabled = 0' /opt/splunk/etc/deployment-apps/Splunk_TA_nix/default/inputs.conf
 #sed -i 's/disabled = 1/disabled = 0/g' /opt/splunk/etc/deployment-apps/Splunk_TA_nix/default/inputs.conf
 #sed -i 's/disabled = true/disabled = false/g' /opt/splunk/etc/deployment-apps/Splunk_TA_nix/default/inputs.conf
-
 sudo -u splunk cp -r /opt/splunk/etc/deployment-apps/Splunk_TA_nix/ /opt/splunk/etc/apps/
+
+curl -o /tmp/linux-auditd-technology-add-on_310.tgz http://foreman.myhost.com/pub/packages/Splunk/apps/linux-auditd-technology-add-on_310.tgz
+sudo -u splunk tar -xvf /tmp/linux-auditd-technology-add-on_310.tgz -C /opt/splunk/etc/deployment-apps
+sudo -u splunk cp -r /opt/splunk/etc/deployment-apps/TA-linux_auditd/ /opt/splunk/etc/apps/
+
+curl -o /tmp/linux-secure-technology-add-on_100.tgz http://foreman.myhost.com/pub/packages/Splunk/apps/linux-secure-technology-add-on_100.tgz
+sudo -u splunk tar -xvf /tmp/linux-secure-technology-add-on_100.tgz -C /opt/splunk/etc/deployment-apps
+
 sudo -u splunk cat > /opt/splunk/etc/system/local/serverclass.conf << EOF
 [serverClass:Linux-Class]
 
