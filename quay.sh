@@ -111,3 +111,67 @@ echo "https://$(hostname -f)"
 
 #docker run -d --name mirroring-worker2 -v /mnt/quay/config:/conf/stack -v \
 #/root/ca.crt:/etc/pki/ca-trust/source/anchors/ca.crt quay.myhost.com/admin/quay:v3.3.0 repomirror
+
+cat > dockerImages << EOF
+registry.access.redhat.com/rhosp13/openstack-aodh-api:latest
+registry.access.redhat.com/rhosp13/openstack-aodh-evaluator:latest
+registry.access.redhat.com/rhosp13/openstack-aodh-listener:latest
+registry.access.redhat.com/rhosp13/openstack-aodh-notifier:latest
+registry.access.redhat.com/rhosp13/openstack-ceilometer-central:latest
+registry.access.redhat.com/rhosp13/openstack-ceilometer-compute:latest
+registry.access.redhat.com/rhosp13/openstack-ceilometer-notification:latest
+registry.access.redhat.com/rhosp13/openstack-cinder-api:latest
+registry.access.redhat.com/rhosp13/openstack-cinder-scheduler:latest
+registry.access.redhat.com/rhosp13/openstack-cinder-volume:latest
+registry.access.redhat.com/rhosp13/openstack-cron:latest
+registry.access.redhat.com/rhosp13/openstack-glance-api:latest
+registry.access.redhat.com/rhosp13/openstack-gnocchi-api:latest
+registry.access.redhat.com/rhosp13/openstack-gnocchi-metricd:latest
+registry.access.redhat.com/rhosp13/openstack-gnocchi-statsd:latest
+registry.access.redhat.com/rhosp13/openstack-haproxy:latest
+registry.access.redhat.com/rhosp13/openstack-heat-api-cfn:latest
+registry.access.redhat.com/rhosp13/openstack-heat-api:latest
+registry.access.redhat.com/rhosp13/openstack-heat-engine:latest
+registry.access.redhat.com/rhosp13/openstack-horizon:latest
+registry.access.redhat.com/rhosp13/openstack-iscsid:latest
+registry.access.redhat.com/rhosp13/openstack-keystone:latest
+registry.access.redhat.com/rhosp13/openstack-mariadb:latest
+registry.access.redhat.com/rhosp13/openstack-memcached:latest
+registry.access.redhat.com/rhosp13/openstack-neutron-dhcp-agent:latest
+registry.access.redhat.com/rhosp13/openstack-neutron-l3-agent:latest
+registry.access.redhat.com/rhosp13/openstack-neutron-metadata-agent:latest
+registry.access.redhat.com/rhosp13/openstack-neutron-openvswitch-agent:latest
+registry.access.redhat.com/rhosp13/openstack-neutron-server:latest
+registry.access.redhat.com/rhosp13/openstack-nova-api:latest
+registry.access.redhat.com/rhosp13/openstack-nova-compute:latest
+registry.access.redhat.com/rhosp13/openstack-nova-conductor:latest
+registry.access.redhat.com/rhosp13/openstack-nova-consoleauth:latest
+registry.access.redhat.com/rhosp13/openstack-nova-libvirt:latest
+registry.access.redhat.com/rhosp13/openstack-nova-novncproxy:latest
+registry.access.redhat.com/rhosp13/openstack-nova-placement-api:latest
+registry.access.redhat.com/rhosp13/openstack-nova-scheduler:latest
+registry.access.redhat.com/rhosp13/openstack-octavia-api:latest
+registry.access.redhat.com/rhosp13/openstack-octavia-health-manager:latest
+registry.access.redhat.com/rhosp13/openstack-octavia-housekeeping:latest
+registry.access.redhat.com/rhosp13/openstack-octavia-worker:latest
+registry.access.redhat.com/rhosp13/openstack-panko-api:latest
+registry.access.redhat.com/rhosp13/openstack-rabbitmq:latest
+registry.access.redhat.com/rhosp13/openstack-redis:latest
+registry.access.redhat.com/rhosp13/openstack-swift-account:latest
+registry.access.redhat.com/rhosp13/openstack-swift-container:latest
+registry.access.redhat.com/rhosp13/openstack-swift-object:latest
+registry.access.redhat.com/rhosp13/openstack-swift-proxy-server:latest
+registry.access.redhat.com/rhceph/rhceph-3-rhel7:latest
+EOF
+
+while read line ; do docker pull $line ; done < dockerImages
+
+while read line 
+do 
+  image=$(echo $line | awk '{print $1}') 
+  tag=$(echo $line | awk '{print $2}') 
+  imageRename=$(echo $image | sed "s/registry.access.redhat.com/quay.myhost.com/g") 
+  id=$(echo $line | awk '{print $3}')
+  docker tag $id $imageRename:$tag  
+  docker push $imageRename:$tag  
+done <  <( docker images | grep "registry.access.redhat.com" )
