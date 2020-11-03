@@ -56,6 +56,7 @@ update-ca-trust enable
 update-ca-trust
 #######################firewall config##############################
 if  [  $( firewall-cmd --query-service=RH-Satellite-6) == 'no'  ] ; then firewall-cmd --permanent --add-service=RH-Satellite-6 ; fi
+#firewall-cmd --permanent --add-rich-rule "rule family=ipv4 port port=67 protocol=tcp reject"
 firewall-cmd --reload
 ########################installation#############################
 foreman-installer --scenario katello \

@@ -2,10 +2,11 @@
 #at least two interface is required. one for server connection which is public ip
 #another interface for connecting to overcloud which is local_interface (note undercloud.conf)
 #before this step run quay.sh to push all required docker images to the repository
+#stop dhcp services on other devices on the network to prevent conflict.
 
 #buggggy
 #ssh-keygen -b 2048 -t rsa -f /home/stack/.ssh/id_rsa -q -N ""
-ssh-copy-id -i ~/.ssh/id_rsa.pub root@quay.myhost.com
+#ssh-copy-id -i ~/.ssh/id_rsa.pub root@quay.myhost.com
 
 con=$(nmcli -g UUID con sh)
 IP=$(nmcli con sh "$con" | grep IP4.ADDRESS | awk '{print $2}')
@@ -42,7 +43,6 @@ EOF
 
 openstack undercloud install
 sudo hiera admin_password
-#no need for docker repository until this stage
 source stackrc
 
 mkdir ~/images
@@ -76,16 +76,52 @@ openstack overcloud container image prepare \
 
 export QuayHost=quay.myhost.com
 sudo mkdir -p /etc/docker/certs.d/$QuayHost
-scp  root@$QuayHost:/etc/docker/certs.d/$QuayHost/ca.crt .
+sshpass -pIahoora@123 scp  root@$QuayHost:/etc/docker/certs.d/$QuayHost/ca.crt .
 sudo mv ca.crt /etc/docker/certs.d/$QuayHost
 sudo update-ca-trust
 sudo docker login -u admin -p Iahoora@123 $QuayHost 
 
+#no need for docker repository until this stage
 sudo openstack overcloud container image upload \
 --config-file /home/stack/templates/local_registry_images.yaml \
 --verbose
+###############################################################################
 
+#openstack baremetal node list
+#manually edit the /home/stack/templates/instackenv.json file and also create the required machines
+#openstack baremetal node maintenance set NODEUUID
+#openstack baremetal node delete NODEUUID
+openstack overcloud node import /home/stack/templates/instackenv.json
+openstack overcloud node introspect --all-manageable --provide
+#watch -n5 openstack baremetal node list
+#manually shutdown the nodes when last command output is  "None power off available"
 
+openstack baremetal node set --property capabilities='node:compute0,boot_option:local'  compute0 
+openstack baremetal node set --property capabilities='node:controller0,boot_option:local'  controller0
+openstack baremetal node set --property capabilities='node:ceph0,boot_option:local'  ceph0
 
+echo "autocmd FileType yaml setlocal ai ts=2 sw=2 et" > ~/.vimrc
+#manually copy the key in /etc/pki/ca-trust/source/anchors/cm-local-ca.pem to two locations in /home/stack/templates/10-inject-trust-anchor.yaml
+certVal=$( awk '/-----BEGIN CERTIFICATE-----/{flag=1}/-----END CERTIFICATE-----/{print;flag=0}flag' /etc/pki/ca-trust/source/anchors/cm-local-ca.pem )
+cert="${certVal//$'\n'/\\\\n}"
+sed -i  "s~MYCERT~${cert}~" /home/stack/templates/10-inject-trust-anchor.yaml
+sed -i 's/\\n/\n        /g' /home/stack/templates/10-inject-trust-anchor.yaml
 
+#edit some templates info with current network info
+sed -i 's/mcci.local/myhost.com/g' templates/*
+sed -i 's/10.115.67/192.168.13/g' templates/*
+sed -i 's/192.168.13.96\/27/192.168.13.0\/24/g' templates/*
+sed -i 's/192.168.13.126/192.168.13.2/g' templates/*
+
+cd /home/stack/templates/; 
+echo '' > /home/stack/.ssh/known_hosts  ; 
+openstack overcloud deploy  --templates  --answers-file /home/stack/templates/overcloud-answer-files.yaml --ntp-server 192.168.24.1 --dry-run
+
+"[if on a vm without IPMI abilities then:]
+su - stack
+. stackrc
+watch -n5 openstack baremetal node list
+[wait until the machines are in ""wait call-back"" State then power on machines]
+[after provisioning, machines would power off and their state would be 'power on - active'. => power on them again]
+"
 
