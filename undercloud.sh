@@ -2,7 +2,21 @@
 #at least two interface is required. one for server connection which is public ip
 #another interface for connecting to overcloud which is local_interface (note undercloud.conf)
 #before this step run quay.sh to push all required docker images to the repository
-#stop dhcp services on other devices on the network to prevent conflict.
+#stop dhcp services on other devices on the network to prevent conflict.???
+#for this config you need to create tree virtual machine each with 8 core 8 GB ram 50GB disk 
+#and two interfaces. The first interface located in public zone (same range with primary ip of undercloud)
+#and the second interface in a seperated vlan (not conflicting with other DHCP servers)
+#the undercloud second interface should also be located in this new vlan
+
+
+###if you are installing on a vm (like mine) you should manually perform the power off/on
+
+#cat > /etc/yum.repos.d/newrepo.repo << EOF
+#[newrepo]
+#baseurl=http://192.168.13.150/html/redhat/rhel-7-server-rpms2
+#name=newrepo
+#gpgcheck=false
+#EOF
 
 #buggggy
 #ssh-keygen -b 2048 -t rsa -f /home/stack/.ssh/id_rsa -q -N ""
@@ -42,7 +56,7 @@ masquerade_network = 192.168.24.0/24
 EOF
 
 openstack undercloud install
-sudo hiera admin_password
+#sudo hiera admin_password
 source stackrc
 
 mkdir ~/images
@@ -50,10 +64,12 @@ cd ~/images
 for i in /usr/share/rhosp-director-images/overcloud-full-latest-13.0-x86_64.tar /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0-x86_64.tar;  do tar -xvf $i; done
 openstack overcloud image upload --image-path /home/stack/images/ --http-boot /httpboot
 
-netns=$(sudo ip netns | awk '{print $1}')
-interface=$(sudo ip netns exec $netns ip a sh | grep ".: tap" | awk -F: '{print $2}')
-mac=$(ip l sh ens37 | grep "link/ether" | awk '{print $2}')
-sudo ip netns exec $netns  ip link set $interface address $mac
+####checkkkkkkk
+#netns=$(sudo ip netns | awk '{print $1}')
+#interface=$(sudo ip netns exec $netns ip a sh | grep ".: tap" | awk -F: '{print $2}')
+#mac=$(ip l sh ens37 | grep "link/ether" | awk '{print $2}')
+#sudo ip netns exec $netns  ip link set $interface address $mac
+###################
 
 cd /tmp
 wget --no-parent -r  https://foreman.myhost.com/pub/scripts/openstack/templates/
@@ -76,7 +92,7 @@ openstack overcloud container image prepare \
 
 export QuayHost=quay.myhost.com
 sudo mkdir -p /etc/docker/certs.d/$QuayHost
-sshpass -pIahoora@123 scp  root@$QuayHost:/etc/docker/certs.d/$QuayHost/ca.crt .
+sshpass -pIahoora@123 scp  -o "StrictHostKeyChecking no" root@$QuayHost:/etc/docker/certs.d/$QuayHost/ca.crt .
 sudo mv ca.crt /etc/docker/certs.d/$QuayHost
 sudo update-ca-trust
 sudo docker login -u admin -p Iahoora@123 $QuayHost 
@@ -85,15 +101,22 @@ sudo docker login -u admin -p Iahoora@123 $QuayHost
 sudo openstack overcloud container image upload \
 --config-file /home/stack/templates/local_registry_images.yaml \
 --verbose
-###############################################################################
+#################################snapshot##############################################
+##temp
+su - stack
+source stackrc
+#curl -o /home/stack/templates/10-inject-trust-anchor.yaml  https://foreman.myhost.com/pub/scripts/openstack/templates/10-inject-trust-anchor.yaml
+#curl -o /home/stack/templates/instackenv.json  https://foreman.myhost.com/pub/scripts/openstack/templates/instackenv.json
+##
 
-#openstack baremetal node list
+#openstack baremetal node list => the output of the list should be empty
 #manually edit the /home/stack/templates/instackenv.json file and also create the required machines
 #openstack baremetal node maintenance set NODEUUID
 #openstack baremetal node delete NODEUUID
 openstack overcloud node import /home/stack/templates/instackenv.json
+#watch -n10 openstack baremetal node list => the output should be None-manageable-False
 openstack overcloud node introspect --all-manageable --provide
-#watch -n5 openstack baremetal node list
+#turn on the machine when the state is Power on
 #manually shutdown the nodes when last command output is  "None power off available"
 
 openstack baremetal node set --property capabilities='node:compute0,boot_option:local'  compute0 
@@ -101,27 +124,28 @@ openstack baremetal node set --property capabilities='node:controller0,boot_opti
 openstack baremetal node set --property capabilities='node:ceph0,boot_option:local'  ceph0
 
 echo "autocmd FileType yaml setlocal ai ts=2 sw=2 et" > ~/.vimrc
-#manually copy the key in /etc/pki/ca-trust/source/anchors/cm-local-ca.pem to two locations in /home/stack/templates/10-inject-trust-anchor.yaml
 certVal=$( awk '/-----BEGIN CERTIFICATE-----/{flag=1}/-----END CERTIFICATE-----/{print;flag=0}flag' /etc/pki/ca-trust/source/anchors/cm-local-ca.pem )
 cert="${certVal//$'\n'/\\\\n}"
 sed -i  "s~MYCERT~${cert}~" /home/stack/templates/10-inject-trust-anchor.yaml
 sed -i 's/\\n/\n        /g' /home/stack/templates/10-inject-trust-anchor.yaml
 
 #edit some templates info with current network info
-sed -i 's/mcci.local/myhost.com/g' templates/*
-sed -i 's/10.115.67/192.168.13/g' templates/*
-sed -i 's/192.168.13.96\/27/192.168.13.0\/24/g' templates/*
-sed -i 's/192.168.13.126/192.168.13.2/g' templates/*
-
-cd /home/stack/templates/; 
-echo '' > /home/stack/.ssh/known_hosts  ; 
-openstack overcloud deploy  --templates  --answers-file /home/stack/templates/overcloud-answer-files.yaml --ntp-server 192.168.24.1 --dry-run
-
+sed -i 's/mcci.local/myhost.com/g' /home/stack/templates/*
+sed -i 's/10.115.67/192.168.13/g' /home/stack/templates/*
+sed -i 's/192.168.13.96\/27/192.168.13.0\/24/g' /home/stack/templates/*
+sed -i 's/192.168.13.126/192.168.13.2/g' /home/stack/templates/*
+###config ntpd
+cd /home/stack/templates/
+echo '' > /home/stack/.ssh/known_hosts 
+date > ~/startTime
+openstack overcloud deploy  --templates  --answers-file /home/stack/templates/overcloud-answer-files.yaml --ntp-server 192.168.24.1 
 "[if on a vm without IPMI abilities then:]
 su - stack
 . stackrc
 watch -n5 openstack baremetal node list
-[wait until the machines are in ""wait call-back"" State then power on machines]
+[wait until the machines are in ""wait call-back"" State then power on machines] 30 mins
 [after provisioning, machines would power off and their state would be 'power on - active'. => power on them again]
 "
+#openstack stack failures list overcloud --long
+
 

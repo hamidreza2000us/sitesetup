@@ -31,7 +31,7 @@ export MYSQL_ROOT_PASSWORD=ahoora
 docker run --detach --restart=always --env MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} --env MYSQL_USER=${MYSQL_USER}  \
 --env MYSQL_PASSWORD=${MYSQL_PASSWORD} --env MYSQL_DATABASE=${MYSQL_DATABASE} --name ${MYSQL_CONTAINER_NAME} --privileged=true \
 --publish 3306:3306  -v /var/lib/mysql:/var/lib/mysql/data:Z  registry.access.redhat.com/rhscl/mysql-57-rhel7
-
+####note the permission required for /var/lib/mysql ????
 docker run -d --restart=always -p 6379:6379  --privileged=true  -v /var/lib/redis:/var/lib/redis/data:Z \
 registry.access.redhat.com/rhscl/redis-32-rhel7
 
@@ -112,6 +112,7 @@ echo "https://$(hostname -f)"
 #docker run -d --name mirroring-worker2 -v /mnt/quay/config:/conf/stack -v \
 #/root/ca.crt:/etc/pki/ca-trust/source/anchors/ca.crt quay.myhost.com/admin/quay:v3.3.0 repomirror
 
+
 cat > dockerImages << EOF
 registry.access.redhat.com/rhosp13/openstack-aodh-api:latest
 registry.access.redhat.com/rhosp13/openstack-aodh-evaluator:latest
@@ -164,7 +165,70 @@ registry.access.redhat.com/rhosp13/openstack-swift-proxy-server:latest
 registry.access.redhat.com/rhceph/rhceph-3-rhel7:latest
 EOF
 
-while read line ; do docker pull $line ; done < dockerImages
+#to export from a running repository 
+#while read line 
+#  do skopeo inspect --tls-verify=false docker://$line  | jq .Labels.url
+#done < <(cat 90-overcloud_images.yaml | grep Docker | awk '{print $2}' | sort | uniq )
+
+cat > dockerImages << EOF
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhceph/images/3-25"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-aodh-api/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-aodh-evaluator/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-aodh-listener/images/13.0-71"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-aodh-notifier/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-ceilometer-central/images/13.0-69"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-ceilometer-compute/images/13.0-71"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-ceilometer-notification/images/13.0-71"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-cinder-api/images/13.0-74"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-cinder-scheduler/images/13.0-76"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-cinder-volume/images/13.0-74"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-cron/images/13.0-78"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-glance-api/images/13.0-74"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-gnocchi-api/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-gnocchi-metricd/images/13.0-73"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-gnocchi-statsd/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-haproxy/images/13.0-75"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-heat-api-cfn/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-heat-api/images/13.0-71"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-heat-engine/images/13.0-69"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-horizon/images/13.0-71"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-iscsid/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-keystone/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-mariadb/images/13.0-73"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-memcached/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-neutron-dhcp-agent/images/13.0-81"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-neutron-l3-agent/images/13.0-79"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-neutron-metadata-agent/images/13.0-82"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-neutron-openvswitch-agent/images/13.0-80"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-neutron-server/images/13.0-79"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-api/images/13.0-80"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-compute/images/13.0-87"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-conductor/images/13.0-78"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-consoleauth/images/13.0-78"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-libvirt/images/13.0-90"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-novncproxy/images/13.0-81"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-placement-api/images/13.0-79"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-nova-scheduler/images/13.0-80"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-octavia-api/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-octavia-health-manager/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-octavia-housekeeping/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-octavia-worker/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-panko-api/images/13.0-72"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-rabbitmq/images/13.0-74"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-redis/images/13.0-75"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-swift-account/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-swift-container/images/13.0-73"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-swift-object/images/13.0-70"
+"https://access.redhat.com/containers/#/registry.access.redhat.com/rhosp13/openstack-swift-proxy-server/images/13.0-72"
+EOF
+
+#just for previous lines 
+while read line 
+do  
+  image=$(echo $line | sed 's|https://access.redhat.com/containers/#/||' | sed 's|/images/|:|' | sed 's/"//g' ) 
+  docker pull  $image ; 
+done < dockerImages
+##
 
 while read line 
 do 

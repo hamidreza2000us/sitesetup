@@ -1,10 +1,67 @@
+curl -s -H "Accept:application/json" -k -u admin:Iahoora@123 \
+https://foreman.myhost.com/katello/api/v2/organizations/1/download_debug_certificate | \
+awk '{print > "cert" (1+n) ".pem"} /-----END RSA PRIVATE KEY-----/ {n++}'
+hammer content-credentials create --organization-id 1 --content-type cert --name DebugKey --key cert1.pem
+hammer content-credentials create --organization-id 1 --content-type cert --name DebugCert --key cert2.pem
+
+hammer repository create --name Red_Hat_Ceph_Storage_Tools_4_for_Red_Hat_Enterprise_Linux_7_Server_RPMs_x86_642 --mirror-on-sync false \
+--content-type yum --url https://foreman.myhost.com/pulp/repos/behsa/Library/content/dist/rhel/server/7/7Server/x86_64/rhceph-tools/4/os/ \
+--download-policy immediate --product test --organization-id 1 --ssl-client-cert DebugCert --ssl-client-key DebugKey
+
+hammer repository synchronize --product test --name Red_Hat_Ceph_Storage_Tools_4_for_Red_Hat_Enterprise_Linux_7_Server_RPMs_x86_642 \
+--organization-id 1
+
+
+
+
+cat > RedhatOfficialPackageIDs << EOF1
+2808  | yum  | Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server
+2762  | yum       | Red Hat Enterprise Linux High Availability (for RHEL 7 Server) (RPMs)
+9604  | yum       | Red Hat Ceph Storage MON 3 for Red Hat Enterprise Linux 7 Server (RPMs)
+6652  | yum       | Red Hat Ceph Storage Tools 3 for Red Hat Enterprise Linux 7 Server (RPMs)
+9601  | yum       | Red Hat Ceph Storage Tools 4 for Red Hat Enterprise Linux 7 Server (RPMs)
+4115  | yum       | Red Hat Enterprise Linux 7 Server - Extended Update Support - Optional (RPMs)
+4117  | yum       | Red Hat Enterprise Linux 7 Server - Extended Update Support (RPMs)
+4138  | yum       | Red Hat Enterprise Linux 7 Server - Extended Update Support - Supplementary (RPMs)
+3030  | yum       | Red Hat Enterprise Linux 7 Server - Extras (RPMs)
+2463  | yum       | Red Hat Enterprise Linux 7 Server - Optional (RPMs)
+2472  | yum       | Red Hat Enterprise Linux 7 Server - RH Common (RPMs)
+2456  | yum       | Red Hat Enterprise Linux 7 Server (RPMs)
+2476  | yum       | Red Hat Enterprise Linux 7 Server - Supplementary (RPMs)
+6678  | yum       | Red Hat OpenStack Platform 13 Developer Tools for RHEL 7 (RPMs)
+6671  | yum       | Red Hat OpenStack Platform 13 for RHEL 7 (RPMs)
+10057 | yum       | Red Hat OpenStack Platform 13 Octavia for RHEL 7 (RPMs)
+6675  | yum       | Red Hat OpenStack Platform 13 Operational Tools for RHEL 7 (RPMs)
+6683  | yum       | Red Hat OpenStack Platform 13 Tools for RHEL 7 Server (RPMs)
+EOF1
+
+hammer repository-set list --organization-id 1 > RHRepoList
+while read line  
+do
+  RHID=$(echo $line | awk '{print $1}')
+  hammer repository-set enable --organization-id 1 --basearch x86_64 --releasever 7Server --id $RHID ; 
+done < RedhatOfficialPackageIDs
+
+
+
+
+while read id  
+do
+  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
+done < 
+
+while read id  
+do
+  hammer repository synchronize --organization-id 1 --id $id --async 
+done < <(hammer --output csv --no-headers repository list  | grep https://cdn.redhat.com | awk -F, '{print $1}')
+
 cat > packageList << EOF
 rhel-7-server-extras-rpms
 rhel-7-server-openstack-13-tools-rpms
 rhel-7-server-optional-rpms
 rhel-7-server-rhceph-2-tools-rpms
 rhel-7-server-rh-common-rpms
-rhel-7-server-rpms
+rhel-7-server-rpms2
 rhel-7-server-supplementary-rpms
 rhel-ha-for-rhel-7-server-rpms
 rhel-server-rhscl-7-rpms
