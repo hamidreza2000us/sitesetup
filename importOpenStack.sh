@@ -48,7 +48,7 @@ done < RedhatOfficialPackageIDs
 while read id  
 do
   hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
-done < 
+done < <(hammer --output csv --no-headers repository list  | grep https://cdn.redhat.com | awk -F, '{print $1}')
 
 while read id  
 do
