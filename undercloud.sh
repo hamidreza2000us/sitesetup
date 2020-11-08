@@ -8,6 +8,11 @@
 #and the second interface in a seperated vlan (not conflicting with other DHCP servers)
 #the undercloud second interface should also be located in this new vlan
 
+subscription-manager register --org="behsa" --activationkey="Openstack-new" --force
+
+while read line ; 
+do subscription-manager repos --enable=$(echo $line | awk '{print $3}')   ; 
+done< <(subscription-manager repos --list | grep "^Repo ID:")
 
 ###if you are installing on a vm (like mine) you should manually perform the power off/on
 
