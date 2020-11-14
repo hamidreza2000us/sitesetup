@@ -8,7 +8,8 @@
 #and the second interface in a seperated vlan (not conflicting with other DHCP servers)
 #the undercloud second interface should also be located in this new vlan
 
-subscription-manager register --org="behsa" --activationkey="Openstack-new" --force
+#subscription-manager clean;
+subscription-manager register --org="behsa" --activationkey="RH-RHOSP13" --force 
 
 while read line ; 
 do subscription-manager repos --enable=$(echo $line | awk '{print $3}')   ; 
@@ -111,7 +112,7 @@ sudo openstack overcloud container image upload \
 su - stack
 source stackrc
 #curl -o /home/stack/templates/10-inject-trust-anchor.yaml  https://foreman.myhost.com/pub/scripts/openstack/templates/10-inject-trust-anchor.yaml
-#curl -o /home/stack/templates/instackenv.json  https://foreman.myhost.com/pub/scripts/openstack/templates/instackenv.json
+curl -o /home/stack/templates/instackenv.json  https://foreman.myhost.com/pub/scripts/openstack/templates/instackenv.json
 ##
 
 #openstack baremetal node list => the output of the list should be empty
@@ -140,6 +141,10 @@ sed -i 's/10.115.67/192.168.13/g' /home/stack/templates/*
 sed -i 's/192.168.13.96\/27/192.168.13.0\/24/g' /home/stack/templates/*
 sed -i 's/192.168.13.126/192.168.13.2/g' /home/stack/templates/*
 ###config ntpd
+curl -o /home/stack/templates/single-nic-vlans/compute.yaml http://foreman.myhost.com/pub/scripts/openstack/templates/single-nic-vlans/compute.yaml
+curl -o /home/stack/templates/single-nic-vlans/controller.yaml http://foreman.myhost.com/pub/scripts/openstack/templates/single-nic-vlans/controller.yaml
+curl -o /home/stack/templates/single-nic-vlans/ceph-storage.yaml http://foreman.myhost.com/pub/scripts/openstack/templates/single-nic-vlans/ceph-storage.yaml
+
 cd /home/stack/templates/
 echo '' > /home/stack/.ssh/known_hosts 
 date > ~/startTime

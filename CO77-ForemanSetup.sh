@@ -261,6 +261,13 @@ hammer host create --name myhost01 --hostgroup hostgroup01 --content-source $dom
  --build true --enabled true --managed true
 #--openscap-proxy-id 1
 
+###############################Create Debug key###############################
+curl -s -H "Accept:application/json" -k -u admin:${pass} https://${domain}/katello/api/v2/organizations/1/download_debug_certificate \
+|  awk '{print > "cert" (1+n) ".pem"} /-----END RSA PRIVATE KEY-----/ {n++}'
+hammer content-credentials create --organization-id 1  --name DebugKey --key cert1.pem --content-type gpg_key
+hammer content-credentials create --organization-id 1  --name DebugCert --key cert2.pem --content-type cert
+#############################################################################################
+
 ###############################
 #curl --insecure --output katello-ca-consumer-latest.noarch.rpm  https://$domain/pub/katello-ca-consumer-latest.noarch.rpm
 #yum localinstall -y katello-ca-consumer-latest.noarch.rpm
