@@ -35,7 +35,7 @@ done< <(subscription-manager repos --list | grep "^Repo ID:")
 #ssh-copy-id -i ~/.ssh/id_rsa.pub root@quay.myhost.com
 
 #if using DHCP make the IP address persistent
-con=$(nmcli -g UUID con sh)
+con=$(nmcli -g UUID con sh --active)
 IP=$(nmcli con sh "$con" | grep IP4.ADDRESS | awk '{print $2}')
 GW=$(nmcli con sh "$con" | grep IP4.GATEWAY | awk '{print $2}')
 DNS=$(nmcli con sh "$con" | grep IP4.DNS | awk '{print $2}')

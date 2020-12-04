@@ -36,16 +36,17 @@ done < RepoIDs
 #list all local enabled repositories for later use
 hammer --output csv --no-headers repository list > enabledRepos
 
-#this option is intented to use for full sync of redhat content
-#while read line  
-#do
-#  line=$(echo $line | awk -F\| '{print $3}' )
-#  line=${line/(RPMs)/RPMs}
-#  line=$( echo ${line} | sed 's/^ //')
-#  id=$(grep ",${line}" enabledRepos | awk -F, '{print $1}')
-#  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
-#done <RHOPS16IDs
-
+#this option is intented to use for full sync of redhat content (use with care)
+###############################################################
+while read line  
+do
+  line=$(echo $line | awk -F\| '{print $3}' )
+  line=${line/(RPMs)/RPMs}
+  line=$( echo ${line} | sed 's/^ //')
+  id=$(grep ",${line}" enabledRepos | awk -F, '{print $1}')
+  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
+done <RepoIDs
+###############################################################
 #Synchronize the Redhat Repositories
 while read line  
 do

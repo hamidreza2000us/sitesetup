@@ -80,6 +80,7 @@ foreman-installer --enable-foreman-plugin-bootdisk   --enable-foreman-plugin-dis
 --foreman-proxy-tftp-servername ${domain} \
 --enable-foreman-plugin-openscap --enable-foreman-proxy-plugin-openscap \
 --enable-foreman-compute-vmware  --enable-foreman-compute-openstack
+#--enable-foreman-compute-ovirt
 
 #/usr/sbin/foreman-rake apipie:cache:index
 
