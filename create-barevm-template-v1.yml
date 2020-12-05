@@ -1,6 +1,6 @@
 ---
 #To run this script please refer to the create-barevm-v1.yml file for descriptions
-- name: Create RHV Template from existing VM
+- name: Create Ovirt VM based on a cow template
   hosts: rhvh01.myhost.com
   tasks:
   - include_vars: ovirt_variables.yml
@@ -12,21 +12,22 @@
       ca_file: ca.pem
       password: "{{ RHVMPass }}"
 
+
   - ovirt_vm:
       auth: "{{ ovirt_auth }}"
-      name: "{{ VMName }}"
-      state: stopped
-
-  - ovirt_template:
-      auth: "{{ ovirt_auth }}"
       cluster: Default
-      name: "{{ VMTempate }}"
-      vm: "{{ VMName }}"
-      timeout: 1200
-      description: "{{ VMTempate }}"
-
-  
-
+      name: "{{ VMName }}"
+      comment: "{{ VMComment }}"
+      description: "{{ VMDescription }}"
+      template: "{{ VMTempate }}"
+      memory: "{{ VMMemory }}"
+      cpu_cores: "{{ VMCore }}"
+      cpu_sockets: "{{ VMSocket }}"
+      type: server
+      state: running
+      operating_system: "{{ VMOS }}"
+      nics:
+        - name: nic1
 
 ...
 

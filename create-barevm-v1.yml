@@ -19,12 +19,16 @@
 #VMMemory: "2GiB"
 #VMSocket: 2
 #VMCore: 2
-##common os types are: rhel_8x64, rhel_7x64, windows_2016x64, windows_10
-#VMOS: rhel_7x64
+#VMOS: rhel_8x64
 #VMDiskSize: 10GiB
 #VMStorageDomain: hosted_storage
 #VMNetProfile: ovirtmgmt
 #VMNetNetwork: ovirtmgmt
+###########################
+#ImageName: rhel-8.3-x86_64
+#ImagePath: /root/images/rhel-8.3-x86_64-kvm.qcow2
+#VMTempate: RHEL8.3Template
+#
 #
 #EOF
 #
@@ -33,8 +37,8 @@
 #ssh-copy-id -i .ssh/id_rsa.pub rhvm.myhost.com
 #scp rhvm:/etc/pki/ovirt-engine/ca.pem ~/
 #Then run the following command
-#ansible-playbook -i .inventory site.yml
-- name: test ansible playbook
+#ansible-playbook -i .inventory create-barevm-v1.yml
+- name: Create a standard VM with no image
   hosts: rhvm.myhost.com
   tasks:
   - include_vars: ovirt_variables.yml

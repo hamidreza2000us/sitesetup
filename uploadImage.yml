@@ -1,24 +1,6 @@
 ---
-#To run this script 
-#1-use the rhvh host which has ansible already installed
-#2-Create a .inventory file with following command (change the hostname to mathc RHVM Server)
-#cat > .inventory << EOF
-#[hosts]
-#rhvm.myhost.com
-#EOF
-#
-#3-Then create a password file (not vaulted!) with following command
-#cat > ovirt_variables.yml << EOF
-#RHVMURL: "https://rhvm.myhost.com/ovirt-engine/api"
-#RHVMUser: "admin@internal"
-#RHVMPass: "ahoora"
-#EOF
-#
-#4-Manually change the hostname and password in above files to match your requirements
-#(maybe ssh-copy-id is required!!
-#Then run the following command
-#ansible-playbook -i .inventory uploadImage.yml
-- name: test ansible playbook
+#To run this script please refer to the create-barevm-v1.yml file for descriptions
+- name: Upload Image file to RHV
   hosts: rhvh01.myhost.com
   tasks:
   - include_vars: ovirt_variables.yml
