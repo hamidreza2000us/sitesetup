@@ -1,0 +1,19 @@
+RHVMURL: "https://rhvm.myhost.com/ovirt-engine/api"
+RHVMUser: "admin@internal"
+RHVMPass: "ahoora"
+VMName: "myvm01"
+VMComment: "My VM Comments"
+VMDescription: "VM Description"
+VMTimeZone: "Asia/Tehran"
+VMMemory: "2GiB"
+VMSocket: 2
+VMCore: 2
+VMOS: rhel_7x64
+VMDiskSize: 10GiB
+VMStorageDomain: hosted_storage
+VMNetProfile: ovirtmgmt
+VMNetNetwork: ovirtmgmt
+
+###########################
+ImageName: rhel-8.3-x86_64
+ImagePath: /root/images/rhel-8.3-x86_64-kvm.qcow2

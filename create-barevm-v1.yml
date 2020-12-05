@@ -1,5 +1,5 @@
 ---
-#To run this script
+#To run this script 
 #1-use the rhvh host which has ansible already installed
 #2-Create a .inventory file with following command (change the hostname to mathc RHVM Server)
 #cat > .inventory << EOF
@@ -29,58 +29,60 @@
 #EOF
 #
 #4-Manually change the hostname and password in above files to match your requirements
-#(maybe ssh-copy-id is required!!
+#5-Run the commands below on rhvh host to send public key to rhvm host
+#ssh-copy-id -i .ssh/id_rsa.pub rhvm.myhost.com
+#scp rhvm:/etc/pki/ovirt-engine/ca.pem ~/
 #Then run the following command
 #ansible-playbook -i .inventory site.yml
 - name: test ansible playbook
   hosts: rhvm.myhost.com
   tasks:
-  - include_vars: ovirt_password.yml
+  - include_vars: ovirt_variables.yml
 
   - name: Obtain SSO token with using username/password credentials
     ovirt_auth:
-      url: https://rhvm.myhost.com/ovirt-engine/api
-      username: admin@internal
+      url: "{{ RHVMURL }}"
+      username: "{{ RHVMUser }}"
       ca_file: /etc/pki/ovirt-engine/ca.pem
-      password: "{{ ovirt_password }}"
+      password: "{{ RHVMPass }}"
 
 
   - ovirt_vm:
       auth: "{{ ovirt_auth }}"
       state: present
       cluster: Default
-      name: myvm
-      comment: myvm comment
-      description: myvm Description
-      timezone: Asia/Tehran
+      name: "{{ VMName }}"
+      comment: "{{ VMComment }}"
+      description: "{{ VMDescription }}"
+      timezone: "{{ VMTimeZone }}"
       soundcard_enabled: no
-      memory: 2GiB
-      cpu_cores: 2
-      cpu_sockets: 2
-      cpu_shares: 1024
+      memory: "{{ VMMemory }}"
+      cpu_cores: "{{ VMCore }}"
+      cpu_sockets: "{{ VMSocket }}"
       type: server
-      operating_system: rhel_7x64
+      operating_system: "{{ VMOS }}"
       nics:
         - name: nic1
 
   - ovirt_disk:
       auth: "{{ ovirt_auth }}"
-      name: myvm_disk
-      vm_name: myvm
-      size: 10GiB
+      name: "{{ VMName }}-disk"
+      vm_name: "{{ VMName }}"
+      size: "{{ VMDiskSize }}"
       format: cow
       bootable: yes
       interface: virtio_scsi
-      storage_domain: hosted_storage
+      storage_domain: "{{ VMStorageDomain }}"
 
   - ovirt_nic:
       auth: "{{ ovirt_auth }}"
       state: present
-      vm: myvm
+      vm: "{{ VMName }}"
       name: nic1
       interface: virtio
-      profile: ovirtmgmt
-      network: ovirtmgmt
+      profile: "{{ VMNetProfile }}"
+      network: "{{ VMNetNetwork }}"
 
 
 ...
+
