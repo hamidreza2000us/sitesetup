@@ -13,7 +13,7 @@ VMDiskSize: 10GiB
 VMStorageDomain: hosted_storage
 VMNetProfile: ovirtmgmt
 VMNetNetwork: ovirtmgmt
-
+HostName: myhost01.myhost.com
 ###########################
 ImageName: rhel-8.3-x86_64
 ImagePath: /root/images/rhel-8.3-x86_64-kvm.qcow2

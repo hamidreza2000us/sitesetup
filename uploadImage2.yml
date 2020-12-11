@@ -1,0 +1,26 @@
+---
+#To run this script please refer to the create-barevm-v1.yml file for descriptions
+- name: Upload Image file to RHV
+  hosts: rhvh01.myhost.com
+  tasks:
+  - include_vars: ovirt_variables.yml
+
+  - name: Obtain SSO token with using username/password credentials
+    ovirt_auth:
+      url: "{{ RHVMURL }}"
+      username: "{{ RHVMUser }}"
+      ca_file: ca.pem
+      password: "{{ RHVMPass }}"
+
+
+  - ovirt_disk:
+      auth: "{{ ovirt_auth }}"
+      name: "{{ item }}"
+      size: 10GiB
+      format: cow
+      image_path: "/root/{{ item }}"
+      storage_domain: "{{ VMStorageDomain }}"
+    loop:
+      - rhel-8.3-x86_64-kvm.qcow2
+      - rhel-server-7.9-x86_64-kvm.qcow2
+...

@@ -60,7 +60,7 @@
       cloud_init:
         authorized_ssh_keys : "{{ ssh_keys.stdout }}"
         timezone: Asia/Tehran
-        host_name: myhost01.myhost.com
+        host_name: "{{ HostName }}"
         custom_script: |
           write_files:
            - content: |

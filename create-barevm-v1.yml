@@ -34,8 +34,8 @@
 #
 #4-Manually change the hostname and password in above files to match your requirements
 #5-Run the commands below on rhvh host to send public key to rhvm host
-#ssh-copy-id -i .ssh/id_rsa.pub rhvm.myhost.com
-#scp rhvm:/etc/pki/ovirt-engine/ca.pem ~/
+#sshpass -p ahoora ssh-copy-id -o StrictHostKeyChecking=no rhvm.myhost.com
+#scp -o 'StrictHostKeyChecking=no' rhvm:/etc/pki/ovirt-engine/ca.pem ~/
 #Then run the following command
 #ansible-playbook -i .inventory create-barevm-v1.yml
 - name: Create a standard VM with no image
