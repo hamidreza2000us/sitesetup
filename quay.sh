@@ -2,9 +2,9 @@
 #it requires a server with 4 cores and 4 GB of memory
 #enough disk space is required
 #you should already import the images and also add the repository to install docker
-http://foreman.myhost.com/pub/images/mysql-57-rhel7.tar.gz
-http://foreman.myhost.com/pub/images/quay_v3.3.0.tar.gz
-http://foreman.myhost.com/pub/images/redis-32-rhel7.tar.gz
+#http://foreman.myhost.com/pub/images/mysql-57-rhel7.tar.gz
+#http://foreman.myhost.com/pub/images/quay_v3.3.0.tar.gz
+#http://foreman.myhost.com/pub/images/redis-32-rhel7.tar.gz
 
 yum install -y docker mariadb telnet
 systemctl enable docker --now
