@@ -43,7 +43,7 @@ do
   newrelese=$(hammer --output csv --no-headers repository-set available-repositories --fields Release  --organization-id 1  --id $RHID | head -n1 )
   if [[ -n $newrelese ]] ; then relese="${newrelese}" ; fi
   hammer repository-set enable --organization-id 1 --basearch x86_64 --releasever ${relese} --id $RHID ; 
-done < RepoIDs
+done <RepoIDs
 
 #list all local enabled repositories for later use
 hammer --output csv --no-headers repository list > enabledRepos
@@ -56,7 +56,7 @@ hammer --output csv --no-headers repository list > enabledRepos
 #  line=$( echo ${line} | sed 's/^ //')
 #  id=$(grep ",${line}" enabledRepos | awk -F, '{print $1}')
 #  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
-#done <RHOPS16IDs
+#done <RepoIDs
 
 #Synchronize the Redhat Repositories
 while read line  

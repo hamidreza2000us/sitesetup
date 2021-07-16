@@ -41,14 +41,16 @@ done < RepoIDs
 hammer --output csv --no-headers repository list > enabledRepos
 
 #this option is intented to use for full sync of redhat content
-#while read line  
-#do
-#  line=$(echo $line | awk -F\| '{print $3}' )
-#  line=${line/(RPMs)/RPMs}
-#  line=$( echo ${line} | sed 's/^ //')
-#  id=$(grep ",${line}" enabledRepos | awk -F, '{print $1}')
-#  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
-#done <RHOPS16IDs
+while read line  
+do
+  line=$(echo $line | awk -F\| '{print $3}' )
+  line=${line/(RPMs)/RPMs}
+  line=$( echo ${line} | sed 's/^ //')
+  id=$(grep ",${line}" enabledRepos | awk -F, '{print $1}')
+  hammer repository update --organization-id 1 --mirror-on-sync false --download-policy immediate --id $id 
+done <RepoIDs
+
+
 
 #Synchronize the Redhat Repositories
 while read line  
@@ -78,6 +80,12 @@ hammer activation-key create --name "${OfficialPRD}" --organization-id 1  --life
 hammer product create --name ${PRDName} --label ${PRDName} --organization-id 1
 #create a content view
 hammer content-view create --name "${PRDName}" --label "${PRDName}" --organization-id 1 
+
+
+##################
+curl -s -H "Accept:application/json" -k -u admin:Iahoora@123 https://satellite.idm.mci.ir/katello/api/v2/organizations/1/download_debug_certificate |  awk '{print > "cert" (1+n) ".pem"} /-----END RSA PRIVATE KEY-----/ {n++}' 
+openssl pkcs12 -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -export -in cert2.pem -inkey cert1.pem -out myorg.pfx -name myorg
+##################
 
 #read the content from online satelite and sync it
 while read line  

@@ -1,4 +1,5 @@
 ipa dnsforwardzone-add winhost.com --forward-policy=only --forwarder=192.168.1.121 --skip-overlap-check
+WinHost=mcci.local
 dig +short -t SRV _kerberos._tcp.dc._msdcs.winhost.com.
 dig +short -t SRV _ldap._tcp.dc._msdcs.winhost.com.
 

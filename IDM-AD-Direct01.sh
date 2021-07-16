@@ -3,10 +3,11 @@ nmcli con up fixed
 mount /dev/cdrom /mnt/cdrom/
 yum install -y realmd oddjob oddjob-mkhomedir sssd adcli krb5-workstation samba-common-tools samba-winbind-clients samba-winbind bind-utils
 
+ADDomain=mcci.local
 #test if network connectivity is ok
-dig +short -t SRV  _ldap._tcp.myhost.com
-dig +short -t SRV  _kerberos._tcp.myhost.com
-dig +short -t SRV _ldap._tcp.dc._msdcs.winhost.com
+dig +short -t SRV  _ldap._tcp.${ADDomain}
+dig +short -t SRV  _kerberos._tcp.${ADDomain}
+dig +short -t SRV _ldap._tcp.dc._msdcs.${ADDomain}
 
 #check if FQDN of hostname matches with AD Realm
 #check system times
